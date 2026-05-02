@@ -122,5 +122,37 @@
 			}
 			return startStr;
 		}
+
+		// --- Floating notification widget ---
+		var notifyWidget   = document.getElementById('inscience-notify-widget');
+		var notifyTab      = document.getElementById('inscience-notify-tab');
+		var notifyClose    = document.getElementById('inscience-notify-close');
+		var SESSION_KEY    = 'inscience_notify_collapsed';
+
+		if (notifyWidget && notifyTab) {
+			// Restore collapsed state from sessionStorage
+			if (sessionStorage.getItem(SESSION_KEY) === '1') {
+				notifyWidget.classList.add('inscience-notify-collapsed');
+				notifyTab.setAttribute('aria-expanded', 'false');
+			}
+
+			notifyTab.addEventListener('click', function () {
+				var isCollapsed = notifyWidget.classList.toggle('inscience-notify-collapsed');
+				notifyTab.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+				if (isCollapsed) {
+					sessionStorage.setItem(SESSION_KEY, '1');
+				} else {
+					sessionStorage.removeItem(SESSION_KEY);
+				}
+			});
+
+			if (notifyClose) {
+				notifyClose.addEventListener('click', function () {
+					notifyWidget.classList.add('inscience-notify-collapsed');
+					notifyTab.setAttribute('aria-expanded', 'false');
+					sessionStorage.setItem(SESSION_KEY, '1');
+				});
+			}
+		}
 	});
 })();

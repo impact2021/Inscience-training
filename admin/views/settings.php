@@ -55,7 +55,7 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 					__( 'Cancelled courses are hidden from the calendar automatically.', 'inscience-training' ),
 				),
 				'requires'    => __( 'No additional attributes required.', 'inscience-training' ),
-				'tip'         => __( 'Tip: Set the <strong>Enrolment Form Page</strong> in the Settings tab so the Enrol Now button links to the correct page.', 'inscience-training' ),
+				'tip'         => __( 'Tip: Set the <strong>Enrolment Form Page</strong> and the <strong>Notification Sign-up Page</strong> in the Settings tab so the Enrol Now button and the floating notification widget link to the correct pages.', 'inscience-training' ),
 			),
 			array(
 				'icon'        => '📝',

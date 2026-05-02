@@ -57,4 +57,24 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 			</div>
 		</div>
 	</div>
+
+	<!-- Floating notification widget (only rendered when a notification page is configured) -->
+	<?php if ( get_option( 'inscience_notification_page_id' ) ) : ?>
+	<div id="inscience-notify-widget" class="inscience-notify-widget" role="complementary" aria-label="<?php esc_attr_e( 'Course notification sign-up', 'inscience-training' ); ?>">
+		<!-- Collapsed tab – always visible so the widget can be reopened -->
+		<button class="inscience-notify-tab" id="inscience-notify-tab" aria-expanded="true" aria-controls="inscience-notify-panel">
+			<span class="inscience-notify-tab-icon" aria-hidden="true">🔔</span>
+			<span class="inscience-notify-tab-label"><?php esc_html_e( 'Notify me', 'inscience-training' ); ?></span>
+		</button>
+		<!-- Expanded panel -->
+		<div class="inscience-notify-panel" id="inscience-notify-panel">
+			<button class="inscience-notify-close" id="inscience-notify-close" aria-label="<?php esc_attr_e( 'Dismiss', 'inscience-training' ); ?>">&times;</button>
+			<p class="inscience-notify-heading"><?php esc_html_e( 'Get notified about upcoming courses', 'inscience-training' ); ?></p>
+			<a href="<?php echo esc_url( get_permalink( get_option( 'inscience_notification_page_id' ) ) ); ?>"
+				class="inscience-btn inscience-btn-notify">
+				<?php esc_html_e( 'Sign Up', 'inscience-training' ); ?>
+			</a>
+		</div>
+	</div>
+	<?php endif; ?>
 </div>

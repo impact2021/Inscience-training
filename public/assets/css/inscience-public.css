@@ -138,7 +138,15 @@
 }
 
 .inscience-payment-icon {
-	font-size: 22px;
+	display: inline-flex;
+	align-items: center;
+	color: #003366;
+}
+
+.inscience-payment-icon svg {
+	width: 22px;
+	height: 22px;
+	fill: currentColor;
 }
 
 /* Declaration */

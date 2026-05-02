@@ -43,7 +43,7 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 		<?php
 		$shortcodes = array(
 			array(
-				'icon'        => '🗓',
+				'icon'        => 'dashicons-calendar-alt',
 				'tag'         => '[inscience_calendar]',
 				'title'       => __( 'Course Calendar', 'inscience-training' ),
 				'purpose'     => __( 'Displays a full interactive calendar (month view and list view) of all upcoming, published courses. Each event is colour-coded by delivery type — navy for Classroom courses and green for Zoom courses.', 'inscience-training' ),
@@ -58,7 +58,7 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 				'tip'         => __( 'Tip: Set the <strong>Enrolment Form Page</strong> and the <strong>Notification Sign-up Page</strong> in the Settings tab so the Enrol Now button and the floating notification widget link to the correct pages.', 'inscience-training' ),
 			),
 			array(
-				'icon'        => '📝',
+				'icon'        => 'dashicons-edit',
 				'tag'         => '[inscience_enrolment_form]',
 				'title'       => __( 'Course Enrolment Form', 'inscience-training' ),
 				'purpose'     => __( 'Renders the full NZQA-compliant enrolment form. Visitors can select a course, enter their personal details, choose a payment method (Stripe, bank transfer, or on account), accept the declaration, and submit their enrolment.', 'inscience-training' ),
@@ -82,7 +82,7 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 				'tip'         => __( 'Tip: Place this shortcode on a dedicated page (e.g. <em>Enrol</em>) and set that page in Settings.', 'inscience-training' ),
 			),
 			array(
-				'icon'        => '🔔',
+				'icon'        => 'dashicons-bell',
 				'tag'         => '[inscience_notification_signup]',
 				'title'       => __( 'New Course Notification Sign-up', 'inscience-training' ),
 				'purpose'     => __( 'Shows a short sign-up form where visitors can subscribe to receive an email whenever a new course is published on the site. Subscribers can optionally specify a delivery-type preference (all courses, classroom only, or Zoom only).', 'inscience-training' ),
@@ -101,7 +101,10 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 
 		<?php foreach ( $shortcodes as $sc ) : ?>
 		<div class="inscience-card inscience-shortcode-card">
-			<h2><?php echo esc_html( $sc['icon'] . ' ' . $sc['title'] ); ?></h2>
+			<h2>
+				<span class="dashicons <?php echo esc_attr( $sc['icon'] ); ?>"></span>
+				<?php echo esc_html( $sc['title'] ); ?>
+			</h2>
 
 			<div class="inscience-shortcode-tag-wrap">
 				<code class="inscience-shortcode-tag"><?php echo esc_html( $sc['tag'] ); ?></code>
@@ -143,7 +146,7 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 			</table>
 			<?php else : ?>
 			<p class="inscience-shortcode-no-attrs">
-				<span class="dashicons dashicons-yes-alt" style="color:#00a651"></span>
+				<span class="dashicons dashicons-yes-alt"></span>
 				<?php echo esc_html( $sc['requires'] ); ?>
 			</p>
 			<?php endif; ?>
@@ -177,94 +180,107 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 		<?php wp_nonce_field( 'inscience_save_settings_action', 'inscience_nonce' ); ?>
 		<input type="hidden" name="action" value="inscience_save_settings">
 
-		<div class="inscience-form-grid">
-			<div class="inscience-form-main">
+		<!-- Stripe Settings -->
+		<div class="inscience-card">
+			<h2>
+				<span class="dashicons dashicons-money-alt"></span>
+				<?php esc_html_e( 'Stripe Payment Settings', 'inscience-training' ); ?>
+			</h2>
+			<p class="description"><?php esc_html_e( 'Enter your Stripe API keys to accept credit card payments. Keys are stored in the WordPress database (not version-controlled).', 'inscience-training' ); ?></p>
+			<table class="form-table">
+				<tr>
+					<th><?php esc_html_e( 'Publishable Key', 'inscience-training' ); ?></th>
+					<td><input type="text" name="inscience_stripe_public_key" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_stripe_public_key', '' ) ); ?>" placeholder="pk_live_..."></td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Secret Key', 'inscience-training' ); ?></th>
+					<td><input type="password" name="inscience_stripe_secret_key" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_stripe_secret_key', '' ) ); ?>" placeholder="sk_live_..."></td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Webhook Secret', 'inscience-training' ); ?></th>
+					<td>
+						<input type="password" name="inscience_stripe_webhook_secret" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_stripe_webhook_secret', '' ) ); ?>" placeholder="whsec_...">
+						<p class="description">
+							<?php
+							printf(
+								/* translators: %s: webhook URL */
+								esc_html__( 'Configure this Stripe webhook endpoint: %s', 'inscience-training' ),
+								'<code>' . esc_html( admin_url( 'admin-ajax.php?action=inscience_stripe_webhook' ) ) . '</code>'
+							);
+							?>
+						</p>
+					</td>
+				</tr>
+			</table>
+		</div>
 
-				<!-- Stripe Settings -->
-				<div class="inscience-card">
-					<h2><?php esc_html_e( '💳 Stripe Payment Settings', 'inscience-training' ); ?></h2>
-					<p class="description"><?php esc_html_e( 'Enter your Stripe API keys to accept credit card payments. Keys are stored in the WordPress database (not version-controlled).', 'inscience-training' ); ?></p>
-					<table class="form-table">
-						<tr>
-							<th><?php esc_html_e( 'Publishable Key', 'inscience-training' ); ?></th>
-							<td><input type="text" name="inscience_stripe_public_key" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_stripe_public_key', '' ) ); ?>" placeholder="pk_live_..."></td>
-						</tr>
-						<tr>
-							<th><?php esc_html_e( 'Secret Key', 'inscience-training' ); ?></th>
-							<td><input type="password" name="inscience_stripe_secret_key" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_stripe_secret_key', '' ) ); ?>" placeholder="sk_live_..."></td>
-						</tr>
-						<tr>
-							<th><?php esc_html_e( 'Webhook Secret', 'inscience-training' ); ?></th>
-							<td>
-								<input type="password" name="inscience_stripe_webhook_secret" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_stripe_webhook_secret', '' ) ); ?>" placeholder="whsec_...">
-								<p class="description">
-									<?php
-									printf(
-										/* translators: %s: webhook URL */
-										esc_html__( 'Configure this Stripe webhook endpoint: %s', 'inscience-training' ),
-										'<code>' . esc_html( admin_url( 'admin-ajax.php?action=inscience_stripe_webhook' ) ) . '</code>'
-									);
-									?>
-								</p>
-							</td>
-						</tr>
-					</table>
-				</div>
+		<!-- Bank Transfer Settings -->
+		<div class="inscience-card">
+			<h2>
+				<span class="dashicons dashicons-money"></span>
+				<?php esc_html_e( 'Bank Transfer Details', 'inscience-training' ); ?>
+			</h2>
+			<p class="description"><?php esc_html_e( 'These details are included in enrolment confirmation emails when the attendee selects bank transfer as their payment method.', 'inscience-training' ); ?></p>
+			<table class="form-table">
+				<tr>
+					<th><?php esc_html_e( 'Bank Name', 'inscience-training' ); ?></th>
+					<td><input type="text" name="inscience_bank_name" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_bank_name', '' ) ); ?>"></td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Account Name', 'inscience-training' ); ?></th>
+					<td><input type="text" name="inscience_bank_account_name" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_bank_account_name', '' ) ); ?>"></td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Account Number', 'inscience-training' ); ?></th>
+					<td><input type="text" name="inscience_bank_account_number" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_bank_account_number', '' ) ); ?>"></td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Reference Instructions', 'inscience-training' ); ?></th>
+					<td><textarea name="inscience_bank_reference_instructions" class="large-text" rows="2"><?php echo esc_textarea( get_option( 'inscience_bank_reference_instructions', 'Please use your enrolment ID as the payment reference.' ) ); ?></textarea></td>
+				</tr>
+			</table>
+		</div>
 
-				<!-- Bank Transfer Settings -->
-				<div class="inscience-card">
-					<h2><?php esc_html_e( '🏦 Bank Transfer Details', 'inscience-training' ); ?></h2>
-					<p class="description"><?php esc_html_e( 'These details are included in enrolment confirmation emails when the attendee selects bank transfer as their payment method.', 'inscience-training' ); ?></p>
-					<table class="form-table">
-						<tr>
-							<th><?php esc_html_e( 'Bank Name', 'inscience-training' ); ?></th>
-							<td><input type="text" name="inscience_bank_name" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_bank_name', '' ) ); ?>"></td>
-						</tr>
-						<tr>
-							<th><?php esc_html_e( 'Account Name', 'inscience-training' ); ?></th>
-							<td><input type="text" name="inscience_bank_account_name" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_bank_account_name', '' ) ); ?>"></td>
-						</tr>
-						<tr>
-							<th><?php esc_html_e( 'Account Number', 'inscience-training' ); ?></th>
-							<td><input type="text" name="inscience_bank_account_number" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_bank_account_number', '' ) ); ?>"></td>
-						</tr>
-						<tr>
-							<th><?php esc_html_e( 'Reference Instructions', 'inscience-training' ); ?></th>
-							<td><textarea name="inscience_bank_reference_instructions" class="large-text" rows="2"><?php echo esc_textarea( get_option( 'inscience_bank_reference_instructions', 'Please use your enrolment ID as the payment reference.' ) ); ?></textarea></td>
-						</tr>
-					</table>
-				</div>
-			</div>
+		<!-- Email Settings -->
+		<div class="inscience-card">
+			<h2>
+				<span class="dashicons dashicons-email-alt"></span>
+				<?php esc_html_e( 'Email Settings', 'inscience-training' ); ?>
+			</h2>
+			<table class="form-table">
+				<tr>
+					<th><?php esc_html_e( 'From Name', 'inscience-training' ); ?></th>
+					<td><input type="text" name="inscience_email_from_name" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_email_from_name', get_bloginfo( 'name' ) ) ); ?>"></td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'From Address', 'inscience-training' ); ?></th>
+					<td><input type="email" name="inscience_email_from_address" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_email_from_address', get_option( 'admin_email' ) ) ); ?>"></td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Admin Notification Email', 'inscience-training' ); ?></th>
+					<td><input type="email" name="inscience_admin_email" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_admin_email', get_option( 'admin_email' ) ) ); ?>"></td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Email Logo URL', 'inscience-training' ); ?></th>
+					<td><input type="url" name="inscience_email_logo" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_email_logo', '' ) ); ?>"></td>
+				</tr>
+			</table>
+		</div>
 
-			<div class="inscience-form-sidebar">
-				<div class="inscience-card">
-					<h2><?php esc_html_e( '📧 Email Settings', 'inscience-training' ); ?></h2>
-					<table class="form-table">
-						<tr>
-							<th><?php esc_html_e( 'From Name', 'inscience-training' ); ?></th>
-							<td><input type="text" name="inscience_email_from_name" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_email_from_name', get_bloginfo( 'name' ) ) ); ?>"></td>
-						</tr>
-						<tr>
-							<th><?php esc_html_e( 'From Address', 'inscience-training' ); ?></th>
-							<td><input type="email" name="inscience_email_from_address" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_email_from_address', get_option( 'admin_email' ) ) ); ?>"></td>
-						</tr>
-						<tr>
-							<th><?php esc_html_e( 'Admin Notification Email', 'inscience-training' ); ?></th>
-							<td><input type="email" name="inscience_admin_email" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_admin_email', get_option( 'admin_email' ) ) ); ?>"></td>
-						</tr>
-						<tr>
-							<th><?php esc_html_e( 'Email Logo URL', 'inscience-training' ); ?></th>
-							<td><input type="url" name="inscience_email_logo" class="regular-text" value="<?php echo esc_attr( get_option( 'inscience_email_logo', '' ) ); ?>"></td>
-						</tr>
-					</table>
-				</div>
-
-				<div class="inscience-card">
-					<h2><?php esc_html_e( '📄 Pages', 'inscience-training' ); ?></h2>
-					<p class="description"><?php esc_html_e( 'Set the pages used by the plugin for enrolments and notification sign-ups.', 'inscience-training' ); ?></p>
-					<p>
-						<label><strong><?php esc_html_e( 'Enrolment Form Page', 'inscience-training' ); ?></strong></label>
-						<span class="description"><?php esc_html_e( 'The page containing [inscience_enrolment_form]. Used for the Enrol Now button and payment redirects.', 'inscience-training' ); ?></span>
+		<!-- Pages -->
+		<div class="inscience-card">
+			<h2>
+				<span class="dashicons dashicons-admin-page"></span>
+				<?php esc_html_e( 'Pages', 'inscience-training' ); ?>
+			</h2>
+			<p class="description"><?php esc_html_e( 'Set the pages used by the plugin for enrolments and notification sign-ups.', 'inscience-training' ); ?></p>
+			<table class="form-table">
+				<tr>
+					<th>
+						<?php esc_html_e( 'Enrolment Form Page', 'inscience-training' ); ?>
+						<p class="description"><?php esc_html_e( 'The page containing [inscience_enrolment_form]. Used for the Enrol Now button and payment redirects.', 'inscience-training' ); ?></p>
+					</th>
+					<td>
 						<?php
 						wp_dropdown_pages( array(
 							'name'              => 'inscience_enrolment_page_id',
@@ -273,10 +289,14 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 							'option_none_value' => 0,
 						) );
 						?>
-					</p>
-					<p>
-						<label><strong><?php esc_html_e( 'Notification Sign-up Page', 'inscience-training' ); ?></strong></label>
-						<span class="description"><?php esc_html_e( 'The page containing [inscience_notification_signup]. Linked from the floating "Get notified" widget on the calendar.', 'inscience-training' ); ?></span>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<?php esc_html_e( 'Notification Sign-up Page', 'inscience-training' ); ?>
+						<p class="description"><?php esc_html_e( 'The page containing [inscience_notification_signup]. Linked from the floating "Get notified" widget on the calendar.', 'inscience-training' ); ?></p>
+					</th>
+					<td>
 						<?php
 						wp_dropdown_pages( array(
 							'name'              => 'inscience_notification_page_id',
@@ -285,16 +305,14 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 							'option_none_value' => 0,
 						) );
 						?>
-					</p>
-				</div>
-
-				<div class="inscience-card">
-					<p>
-						<button type="submit" class="button button-primary button-large"><?php esc_html_e( 'Save Settings', 'inscience-training' ); ?></button>
-					</p>
-				</div>
-			</div>
+					</td>
+				</tr>
+			</table>
 		</div>
+
+		<p>
+			<button type="submit" class="button button-primary button-large"><?php esc_html_e( 'Save Settings', 'inscience-training' ); ?></button>
+		</p>
 	</form>
 	</div><!-- /.inscience-tab-content -->
 	<?php endif; ?>

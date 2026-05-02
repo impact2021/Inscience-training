@@ -210,3 +210,111 @@
 	background: #d63638 !important;
 	color: #fff !important;
 }
+
+/* ==========================================================================
+   Settings page – tab navigation
+   ========================================================================== */
+.inscience-tab-nav {
+	margin-bottom: 20px;
+}
+
+.inscience-tab-nav .nav-tab .dashicons {
+	font-size: 15px;
+	width: 15px;
+	height: 15px;
+	vertical-align: middle;
+	margin-right: 4px;
+	margin-top: -2px;
+}
+
+.inscience-tab-content {
+	/* breathing room below the tab bar */
+}
+
+/* ==========================================================================
+   Shortcodes tab
+   ========================================================================== */
+.inscience-shortcode-card {
+	border-top: 4px solid #003366;
+}
+
+.inscience-shortcode-card h2 {
+	font-size: 17px;
+}
+
+.inscience-shortcode-card h3 {
+	font-size: 14px;
+	font-weight: 600;
+	margin: 16px 0 8px;
+	color: #1d2327;
+}
+
+.inscience-shortcode-tag-wrap {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 14px;
+}
+
+.inscience-shortcode-tag {
+	font-size: 15px;
+	background: #f0f0f1;
+	padding: 4px 10px;
+	border-radius: 3px;
+	color: #003366;
+	font-weight: 600;
+	user-select: all;
+}
+
+.inscience-copy-btn.copied {
+	background: #00a651 !important;
+	color: #fff !important;
+	border-color: #00a651 !important;
+}
+
+.inscience-shortcode-attrs {
+	margin-bottom: 0;
+}
+
+.inscience-shortcode-attrs code {
+	font-size: 13px;
+}
+
+.inscience-shortcode-no-attrs {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 13px;
+	color: #3c434a;
+	margin: 0;
+}
+
+.inscience-shortcode-behaviour {
+	margin: 0 0 0 20px;
+	list-style: disc;
+}
+
+.inscience-shortcode-behaviour li {
+	font-size: 14px;
+	margin-bottom: 6px;
+	color: #3c434a;
+}
+
+.inscience-shortcode-tip {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	background: #f0f6fc;
+	border-left: 3px solid #2271b1;
+	padding: 10px 14px;
+	margin-top: 16px;
+	border-radius: 0 3px 3px 0;
+	font-size: 13px;
+	color: #1d2327;
+}
+
+.inscience-shortcode-tip .dashicons {
+	color: #2271b1;
+	flex-shrink: 0;
+	margin-top: 1px;
+}

@@ -30,6 +30,7 @@ class InScience_Admin {
 		add_action( 'admin_post_inscience_save_email_template', array( $this, 'handle_save_email_template' ) );
 		add_action( 'admin_post_inscience_save_settings', array( $this, 'handle_save_settings' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+		add_action( 'admin_bar_menu', array( $this, 'admin_bar_version' ), 100 );
 	}
 
 	public function register_menus() {
@@ -395,6 +396,23 @@ class InScience_Admin {
 
 		wp_safe_redirect( add_query_arg( 'inscience_msg', 'settings_saved', admin_url( 'admin.php?page=inscience-settings' ) ) );
 		exit;
+	}
+
+	/**
+	 * Add plugin version to the admin top bar.
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar Admin bar instance.
+	 */
+	public function admin_bar_version( $wp_admin_bar ) {
+		if ( ! current_user_can( 'manage_inscience_courses' ) && ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		$wp_admin_bar->add_node( array(
+			'id'    => 'inscience-training-version',
+			'title' => 'InScience Training v' . INSCIENCE_VERSION,
+			'href'  => admin_url( 'admin.php?page=inscience-training' ),
+			'meta'  => array( 'title' => __( 'InScience Training Plugin', 'inscience-training' ) ),
+		) );
 	}
 
 	/**

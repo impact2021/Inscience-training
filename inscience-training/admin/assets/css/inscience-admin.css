@@ -1,0 +1,212 @@
+/* ==========================================================================
+   InScience Training – Admin Styles
+   ========================================================================== */
+
+.inscience-admin-wrap {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.inscience-page-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 23px;
+	font-weight: 400;
+	margin: 0 0 20px;
+	padding: 9px 0 4px;
+	color: #1d2327;
+}
+
+.inscience-page-title .dashicons {
+	color: #003366;
+	font-size: 28px;
+	width: 28px;
+	height: 28px;
+}
+
+/* Stats Grid */
+.inscience-stats-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+.inscience-stat-card {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-top: 4px solid #003366;
+	border-radius: 4px;
+	padding: 20px;
+	text-align: center;
+}
+
+.inscience-stat-card.inscience-stat-pending {
+	border-top-color: #d63638;
+}
+
+.inscience-stat-card .dashicons {
+	font-size: 32px;
+	width: 32px;
+	height: 32px;
+	color: #003366;
+	margin-bottom: 8px;
+}
+
+.inscience-stat-number {
+	font-size: 36px;
+	font-weight: 700;
+	color: #1d2327;
+	line-height: 1;
+}
+
+.inscience-stat-label {
+	color: #646970;
+	font-size: 13px;
+	margin: 6px 0 10px;
+}
+
+.inscience-stat-card a {
+	font-size: 12px;
+}
+
+/* Quick Actions */
+.inscience-quick-actions {
+	margin-bottom: 24px;
+}
+
+.inscience-quick-actions h2 {
+	font-size: 16px;
+	margin-bottom: 12px;
+}
+
+.inscience-quick-actions .button {
+	margin-right: 8px;
+}
+
+.inscience-quick-actions .button .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+	margin-right: 4px;
+}
+
+/* Cards */
+.inscience-card {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 20px 24px;
+	margin-bottom: 20px;
+}
+
+.inscience-card h2 {
+	margin: 0 0 16px;
+	padding: 0 0 12px;
+	border-bottom: 1px solid #f0f0f1;
+	font-size: 16px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+/* Two-column form layout */
+.inscience-form-grid {
+	display: grid;
+	grid-template-columns: 1fr 340px;
+	gap: 20px;
+	align-items: start;
+}
+
+@media (max-width: 960px) {
+	.inscience-form-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.inscience-two-col {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+}
+
+/* Filter form */
+.inscience-filter-form {
+	margin-bottom: 16px;
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.inscience-filter-form select,
+.inscience-filter-form input[type="search"] {
+	height: 30px;
+}
+
+/* Tables */
+.inscience-table th,
+.inscience-table td {
+	vertical-align: middle !important;
+}
+
+/* Badges */
+.inscience-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 3px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.inscience-badge-classroom { background: #003366; color: #fff; }
+.inscience-badge-zoom      { background: #00a651; color: #fff; }
+.inscience-badge-open      { background: #00a651; color: #fff; }
+.inscience-badge-full      { background: #dba617; color: #fff; }
+.inscience-badge-cancelled { background: #d63638; color: #fff; }
+.inscience-badge-draft     { background: #646970; color: #fff; }
+
+/* Payment status badges */
+.inscience-payment-pending  { background: #dba617; color: #fff; }
+.inscience-payment-paid     { background: #00a651; color: #fff; }
+.inscience-payment-refunded { background: #646970; color: #fff; }
+
+/* Enrolment status badges */
+.inscience-status-pending   { background: #dba617; color: #fff; }
+.inscience-status-confirmed { background: #2271b1; color: #fff; }
+.inscience-status-attended  { background: #00a651; color: #fff; }
+.inscience-status-cancelled { background: #d63638; color: #fff; }
+
+/* Detail table */
+.inscience-detail-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.inscience-detail-table th,
+.inscience-detail-table td {
+	padding: 8px 12px;
+	border-bottom: 1px solid #f0f0f1;
+	font-size: 14px;
+	vertical-align: top;
+}
+
+.inscience-detail-table th {
+	width: 180px;
+	font-weight: 600;
+	color: #646970;
+	text-align: left;
+}
+
+/* Danger button */
+.inscience-btn-danger {
+	color: #d63638 !important;
+	border-color: #d63638 !important;
+}
+
+.inscience-btn-danger:hover {
+	background: #d63638 !important;
+	color: #fff !important;
+}

@@ -133,12 +133,9 @@ class InScience_Calendar {
 		}
 
 		wp_localize_script( 'inscience-calendar', 'inscienceCalendarData', array(
-			'events'           => $events,
-			'ajaxurl'          => admin_url( 'admin-ajax.php' ),
-			'enrolPage'        => get_option( 'inscience_enrolment_page_id' ) ? get_permalink( get_option( 'inscience_enrolment_page_id' ) ) : '',
-			'notifyPage'       => get_option( 'inscience_notification_page_id' ) ? get_permalink( get_option( 'inscience_notification_page_id' ) ) : '',
-			'notifyLabel'      => __( 'Get notified about upcoming courses', 'inscience-training' ),
-			'notifySignUpText' => __( 'Sign Up', 'inscience-training' ),
+			'events'     => $events,
+			'ajaxurl'    => admin_url( 'admin-ajax.php' ),
+			'enrolPage'  => get_option( 'inscience_enrolment_page_id' ) ? get_permalink( get_option( 'inscience_enrolment_page_id' ) ) : '',
 		) );
 
 		ob_start();

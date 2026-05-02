@@ -54,6 +54,19 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 			<p class="inscience-modal-description"></p>
 			<div class="inscience-modal-actions">
 				<a href="#" class="inscience-modal-enrol button inscience-btn-enrol"><?php esc_html_e( 'Enrol Now', 'inscience-training' ); ?></a>
+				<div class="inscience-addcal-wrap">
+					<button type="button" class="inscience-btn-addcal" id="inscience-addcal-toggle" aria-haspopup="true" aria-expanded="false">
+						<span aria-hidden="true">📅</span> <?php esc_html_e( 'Add to Calendar', 'inscience-training' ); ?>
+					</button>
+					<div class="inscience-addcal-dropdown" id="inscience-addcal-dropdown" hidden>
+						<a href="#" class="inscience-addcal-option" id="inscience-addcal-google">
+							<span aria-hidden="true">🗓</span> <?php esc_html_e( 'Google Calendar', 'inscience-training' ); ?>
+						</a>
+						<a href="#" class="inscience-addcal-option" id="inscience-addcal-ics">
+							<span aria-hidden="true">⬇</span> <?php esc_html_e( 'Download .ics', 'inscience-training' ); ?> <small><?php esc_html_e( '(Apple / Outlook)', 'inscience-training' ); ?></small>
+						</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -47,6 +47,7 @@
 
 		function openModal(event) {
 			if (!overlay) return;
+			currentEvent = event; // capture for Add-to-Calendar
 			var props = event.extendedProps || {};
 
 			setText('.inscience-modal-title',   event.title);
@@ -92,6 +93,11 @@
 		function closeModal() {
 			if (overlay) overlay.style.display = 'none';
 			document.body.style.overflow = '';
+			// Close add-to-calendar dropdown if open
+			if (addCalDropdown && !addCalDropdown.hidden) {
+				addCalDropdown.hidden = true;
+				if (addCalToggle) addCalToggle.setAttribute('aria-expanded', 'false');
+			}
 		}
 
 		function setText(selector, text) {
@@ -121,6 +127,136 @@
 				}
 			}
 			return startStr;
+		}
+
+		// --- Add-to-Calendar ---
+		var addCalToggle   = document.getElementById('inscience-addcal-toggle');
+		var addCalDropdown = document.getElementById('inscience-addcal-dropdown');
+		var addCalGoogle   = document.getElementById('inscience-addcal-google');
+		var addCalIcs      = document.getElementById('inscience-addcal-ics');
+		var currentEvent   = null; // set when modal opens
+
+		if (addCalToggle && addCalDropdown) {
+			addCalToggle.addEventListener('click', function (e) {
+				e.stopPropagation();
+				var open = addCalDropdown.hidden;
+				addCalDropdown.hidden = !open;
+				addCalToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+			});
+
+			// Close dropdown when clicking outside
+			document.addEventListener('click', function () {
+				if (!addCalDropdown.hidden) {
+					addCalDropdown.hidden = true;
+					addCalToggle.setAttribute('aria-expanded', 'false');
+				}
+			});
+
+			addCalDropdown.addEventListener('click', function (e) {
+				e.stopPropagation();
+			});
+		}
+
+		if (addCalGoogle) {
+			addCalGoogle.addEventListener('click', function (e) {
+				e.preventDefault();
+				if (!currentEvent) return;
+				var url = buildGoogleCalUrl(currentEvent);
+				if (url) window.open(url, '_blank', 'noopener');
+				addCalDropdown.hidden = true;
+				addCalToggle.setAttribute('aria-expanded', 'false');
+			});
+		}
+
+		if (addCalIcs) {
+			addCalIcs.addEventListener('click', function (e) {
+				e.preventDefault();
+				if (!currentEvent) return;
+				downloadIcs(currentEvent);
+				addCalDropdown.hidden = true;
+				addCalToggle.setAttribute('aria-expanded', 'false');
+			});
+		}
+
+		function buildGoogleCalUrl(event) {
+			var props     = event.extendedProps || {};
+			var startDate = fmtDate(event.start);
+			// FullCalendar end is exclusive – same convention Google uses for all-day
+			var endDate   = event.end ? fmtDate(event.end) : fmtDate(nextDay(event.start));
+			var details   = props.description || '';
+			if (props.price)    details += (details ? '\n' : '') + 'Price: NZ$' + props.price;
+			if (props.us_codes) details += (details ? '\n' : '') + 'Unit Standards: ' + props.us_codes;
+
+			return 'https://www.google.com/calendar/render?action=TEMPLATE' +
+				'&text='     + encodeURIComponent(event.title) +
+				'&dates='    + startDate + '/' + endDate +
+				'&details='  + encodeURIComponent(details) +
+				'&location=' + encodeURIComponent(props.location || '');
+		}
+
+		function downloadIcs(event) {
+			var props     = event.extendedProps || {};
+			var startDate = fmtDate(event.start);
+			var endDate   = event.end ? fmtDate(event.end) : fmtDate(nextDay(event.start));
+			var details   = props.description || '';
+			if (props.price)    details += (details ? '\\n' : '') + 'Price: NZ$' + props.price;
+			if (props.us_codes) details += (details ? '\\n' : '') + 'Unit Standards: ' + props.us_codes;
+
+			var uid = 'inscience-' + (event.id || Date.now()) + '@inscience.co.nz';
+			var now = new Date();
+			var stamp = now.toISOString().replace(/[-:.]/g, '').slice(0, 15) + 'Z';
+
+			var lines = [
+				'BEGIN:VCALENDAR',
+				'VERSION:2.0',
+				'PRODID:-//InScience Training//EN',
+				'CALSCALE:GREGORIAN',
+				'BEGIN:VEVENT',
+				'UID:'         + uid,
+				'DTSTAMP:'     + stamp,
+				'DTSTART;VALUE=DATE:' + startDate,
+				'DTEND;VALUE=DATE:'   + endDate,
+				'SUMMARY:'     + icsEscape(event.title),
+				'DESCRIPTION:' + icsEscape(details),
+				'LOCATION:'    + icsEscape(props.location || ''),
+				'END:VEVENT',
+				'END:VCALENDAR',
+			];
+
+			var blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+			var url  = URL.createObjectURL(blob);
+			var a    = document.createElement('a');
+			a.href   = url;
+			a.download = sanitiseFilename(event.title) + '.ics';
+			document.body.appendChild(a);
+			a.click();
+			setTimeout(function () {
+				document.body.removeChild(a);
+				URL.revokeObjectURL(url);
+			}, 100);
+		}
+
+		/** Format a Date object as YYYYMMDD */
+		function fmtDate(d) {
+			if (!d) return '';
+			var y = d.getFullYear();
+			var m = String(d.getMonth() + 1).padStart(2, '0');
+			var day = String(d.getDate()).padStart(2, '0');
+			return y + m + day;
+		}
+
+		function nextDay(d) {
+			var nd = new Date(d);
+			nd.setDate(nd.getDate() + 1);
+			return nd;
+		}
+
+		function icsEscape(str) {
+			return (str || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+		}
+
+		function sanitiseFilename(str) {
+			return (str || 'event').replace(/[^a-z0-9\-_ ]/gi, '-').trim().replace(/\s+/g, '-').slice(0, 60);
 		}
 
 		// --- Floating notification widget ---

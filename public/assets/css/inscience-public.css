@@ -304,7 +304,73 @@
 }
 
 .inscience-modal-actions {
-	text-align: center;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	justify-content: center;
+}
+
+/* Add-to-calendar wrapper */
+.inscience-addcal-wrap {
+	position: relative;
+	display: inline-block;
+}
+
+.inscience-btn-addcal {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: #f0f4f8;
+	color: #003366;
+	border: 1px solid #c3c4c7;
+	padding: 9px 18px;
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.2s, border-color 0.2s;
+}
+
+.inscience-btn-addcal:hover,
+.inscience-btn-addcal[aria-expanded="true"] {
+	background: #e2e8f0;
+	border-color: #003366;
+}
+
+.inscience-addcal-dropdown {
+	position: absolute;
+	bottom: calc(100% + 6px);
+	left: 50%;
+	transform: translateX(-50%);
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 6px;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+	min-width: 220px;
+	z-index: 10001;
+	overflow: hidden;
+}
+
+.inscience-addcal-option {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 11px 16px;
+	font-size: 14px;
+	color: #1d2327;
+	text-decoration: none;
+	transition: background 0.15s;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.inscience-addcal-option:last-child {
+	border-bottom: none;
+}
+
+.inscience-addcal-option:hover {
+	background: #f0f4f8;
+	color: #003366;
 }
 
 .inscience-btn-enrol {

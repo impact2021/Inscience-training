@@ -55,7 +55,9 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 			</tr>
 		</thead>
 		<tbody>
-		<?php foreach ( $enrolments as $e ) : ?>
+		<?php foreach ( $enrolments as $e ) :
+			$course_meta = InScience_Course_CPT::get_course_meta( $e->course_id );
+		?>
 		<tr>
 			<td><?php echo absint( $e->id ); ?></td>
 			<td>
@@ -63,7 +65,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 				<small><?php echo esc_html( $e->email ); ?></small>
 			</td>
 			<td><?php echo esc_html( get_the_title( $e->course_id ) ); ?></td>
-			<td><?php echo esc_html( gmdate( 'd M Y', strtotime( $e->created_at ) ) ); ?></td>
+			<td><?php echo $course_meta['course_date'] ? esc_html( gmdate( 'd M Y', strtotime( $course_meta['course_date'] ) ) ) : '—'; ?></td>
 			<td>
 				<span class="inscience-badge inscience-payment-<?php echo esc_attr( $e->payment_status ); ?>">
 					<?php echo esc_html( ucfirst( $e->payment_status ) ); ?>

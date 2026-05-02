@@ -396,30 +396,6 @@
 	/* No fixed width – let the page/theme control the container width */
 }
 
-.inscience-notify-wrap .inscience-field {
-	margin-bottom: 20px;
-}
-
-.inscience-notify-wrap .inscience-field label {
-	margin-bottom: 8px;
-}
-
-.inscience-notify-wrap .inscience-input {
-	padding: 11px 14px;
-	border-radius: 6px;
-	border: 1px solid #c3c4c7;
-}
-
-.inscience-notify-wrap .inscience-input:focus {
-	border-color: #003366;
-	box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.12);
-}
-
-/* Extra breathing room above the course-type select */
-.inscience-notify-wrap .inscience-field:nth-child(3) {
-	margin-top: 8px;
-}
-
 /* -------------------------------------------------------------------------
    Floating notification widget
    ------------------------------------------------------------------------- */

@@ -87,10 +87,10 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 				<h2><?php esc_html_e( 'About Email Templates', 'inscience-training' ); ?></h2>
 				<p><?php esc_html_e( 'These templates control all automated emails sent by the InScience Training plugin.', 'inscience-training' ); ?></p>
 				<ul>
-					<li><?php esc_html_e( '🎓 Enrolment Confirmation — sent to attendee on sign-up.', 'inscience-training' ); ?></li>
-					<li><?php esc_html_e( '🔔 New Enrolment Notification — sent to admin on sign-up.', 'inscience-training' ); ?></li>
-					<li><?php esc_html_e( '💳 Payment Received — sent to attendee when payment is confirmed.', 'inscience-training' ); ?></li>
-					<li><?php esc_html_e( '📅 New Course Notification — sent to subscribers when a course is published.', 'inscience-training' ); ?></li>
+					<li><?php esc_html_e( 'Enrolment Confirmation — sent to attendee on sign-up.', 'inscience-training' ); ?></li>
+					<li><?php esc_html_e( 'New Enrolment Notification — sent to admin on sign-up.', 'inscience-training' ); ?></li>
+					<li><?php esc_html_e( 'Payment Received — sent to attendee when payment is confirmed.', 'inscience-training' ); ?></li>
+					<li><?php esc_html_e( 'New Course Notification — sent to subscribers when a course is published.', 'inscience-training' ); ?></li>
 				</ul>
 				<p><?php esc_html_e( 'Configure your From name, From email address and logo in', 'inscience-training' ); ?>
 				<a href="<?php echo esc_url( admin_url( 'admin.php?page=inscience-settings' ) ); ?>"><?php esc_html_e( 'Settings', 'inscience-training' ); ?></a>.</p>

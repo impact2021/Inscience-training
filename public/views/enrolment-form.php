@@ -160,17 +160,23 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 			<div class="inscience-radio-group inscience-payment-options">
 				<label class="inscience-payment-option">
 					<input type="radio" name="payment_method" value="stripe" required>
-					<span class="inscience-payment-icon inscience-payment-icon-stripe">💳</span>
+					<span class="inscience-payment-icon inscience-payment-icon-stripe">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4C2.89 4 2 4.89 2 6v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+					</span>
 					<span><?php esc_html_e( 'Credit / Debit Card (Stripe)', 'inscience-training' ); ?></span>
 				</label>
 				<label class="inscience-payment-option">
 					<input type="radio" name="payment_method" value="bank_transfer">
-					<span class="inscience-payment-icon inscience-payment-icon-bank">🏦</span>
+					<span class="inscience-payment-icon inscience-payment-icon-bank">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.5 1L2 6v2h19V6L11.5 1zM4 10v7h3v-7H4zm6 0v7h3v-7h-3zm6 0v7h3v-7h-3zm4 9H2v2h19v-2z"/></svg>
+					</span>
 					<span><?php esc_html_e( 'Bank Transfer', 'inscience-training' ); ?></span>
 				</label>
 				<label class="inscience-payment-option">
 					<input type="radio" name="payment_method" value="on_account">
-					<span class="inscience-payment-icon inscience-payment-icon-account">📄</span>
+					<span class="inscience-payment-icon inscience-payment-icon-account">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+					</span>
 					<span><?php esc_html_e( 'On Account (account holders only)', 'inscience-training' ); ?></span>
 				</label>
 			</div>

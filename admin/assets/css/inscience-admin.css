@@ -92,6 +92,20 @@
 	margin-right: 4px;
 }
 
+.inscience-card h2 .dashicons {
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+	vertical-align: middle;
+	margin-right: 4px;
+	margin-top: -2px;
+	color: #003366;
+}
+
+.inscience-shortcode-no-attrs .dashicons {
+	color: #00a651;
+}
+
 /* Cards */
 .inscience-card {
 	background: #fff;

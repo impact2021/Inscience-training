@@ -11,9 +11,6 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 		<?php wp_nonce_field( 'inscience_notify', 'inscience_notify_nonce', true, true ); ?>
 
 		<div class="inscience-form-section">
-			<h3><?php esc_html_e( 'Stay informed about new courses', 'inscience-training' ); ?></h3>
-			<p class="inscience-help" style="margin-bottom:20px"><?php esc_html_e( 'Fill in your details below and we will email you as soon as a new course is announced.', 'inscience-training' ); ?></p>
-
 			<div class="inscience-field-row">
 				<div class="inscience-field">
 					<label for="notify_name"><?php esc_html_e( 'Your name', 'inscience-training' ); ?></label>

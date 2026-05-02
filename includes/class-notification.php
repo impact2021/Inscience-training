@@ -37,7 +37,18 @@ class InScience_Notification {
 				array(),
 				INSCIENCE_VERSION
 			);
-			wp_enqueue_script( 'jquery' );
+			wp_enqueue_script(
+				'inscience-notify',
+				INSCIENCE_PLUGIN_URL . 'public/assets/js/inscience-notify.js',
+				array( 'jquery' ),
+				INSCIENCE_VERSION,
+				true
+			);
+			wp_localize_script( 'inscience-notify', 'inscienceNotify', array(
+				'ajaxurl'        => admin_url( 'admin-ajax.php' ),
+				'successMessage' => __( 'Thanks – we\'ll let you know as soon as a new course is available!', 'inscience-training' ),
+				'errorMessage'   => __( 'An error occurred. Please try again.', 'inscience-training' ),
+			) );
 		}
 	}
 

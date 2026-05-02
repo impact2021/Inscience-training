@@ -75,6 +75,16 @@ class InScience_Admin {
 			array( $this, 'render_enrolments' )
 		);
 
+		// Interested Parties (notification subscribers)
+		add_submenu_page(
+			'inscience-training',
+			__( 'Interested Parties', 'inscience-training' ),
+			__( 'Interested Parties', 'inscience-training' ),
+			'manage_inscience_enrolments',
+			'inscience-interested-parties',
+			array( $this, 'render_interested_parties' )
+		);
+
 		// Emails
 		add_submenu_page(
 			'inscience-training',
@@ -102,6 +112,7 @@ class InScience_Admin {
 			'inscience-training_page_inscience-add-course',
 			'inscience-training_page_inscience-courses',
 			'inscience-training_page_inscience-enrolments',
+			'inscience-training_page_inscience-interested-parties',
 			'inscience-training_page_inscience-emails',
 			'inscience-training_page_inscience-settings',
 		);
@@ -219,6 +230,11 @@ class InScience_Admin {
 		) );
 
 		include INSCIENCE_PLUGIN_DIR . 'admin/views/enrolments.php';
+	}
+
+	public function render_interested_parties() {
+		$subscribers = InScience_Notification::get_subscribers();
+		include INSCIENCE_PLUGIN_DIR . 'admin/views/interested-parties.php';
 	}
 
 	public function render_emails() {

@@ -23,8 +23,33 @@ class InScience_Notification {
 
 	private function __construct() {
 		add_shortcode( 'inscience_notification_signup', array( $this, 'render_shortcode' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		// Trigger notification emails when a new course is published.
 		add_action( 'transition_post_status', array( $this, 'on_course_published' ), 10, 3 );
+	}
+
+	public function enqueue_assets() {
+		global $post;
+		if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'inscience_notification_signup' ) ) {
+			wp_enqueue_style(
+				'inscience-public',
+				INSCIENCE_PLUGIN_URL . 'public/assets/css/inscience-public.css',
+				array(),
+				INSCIENCE_VERSION
+			);
+			wp_enqueue_script(
+				'inscience-notify',
+				INSCIENCE_PLUGIN_URL . 'public/assets/js/inscience-notify.js',
+				array( 'jquery' ),
+				INSCIENCE_VERSION,
+				true
+			);
+			wp_localize_script( 'inscience-notify', 'inscienceNotify', array(
+				'ajaxurl'        => admin_url( 'admin-ajax.php' ),
+				'successMessage' => __( 'Thanks – we\'ll let you know as soon as a new course is available!', 'inscience-training' ),
+				'errorMessage'   => __( 'An error occurred. Please try again.', 'inscience-training' ),
+			) );
+		}
 	}
 
 	/**

@@ -386,6 +386,7 @@ class InScience_Admin {
 			'inscience_email_from_address',
 			'inscience_email_logo',
 			'inscience_enrolment_page_id',
+			'inscience_notification_page_id',
 		);
 
 		foreach ( $options as $option ) {

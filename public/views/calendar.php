@@ -54,7 +54,40 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 			<p class="inscience-modal-description"></p>
 			<div class="inscience-modal-actions">
 				<a href="#" class="inscience-modal-enrol button inscience-btn-enrol"><?php esc_html_e( 'Enrol Now', 'inscience-training' ); ?></a>
+				<div class="inscience-addcal-wrap">
+					<button type="button" class="inscience-btn-addcal" id="inscience-addcal-toggle" aria-haspopup="true" aria-expanded="false">
+						<span aria-hidden="true">📅</span> <?php esc_html_e( 'Add to Calendar', 'inscience-training' ); ?>
+					</button>
+					<div class="inscience-addcal-dropdown" id="inscience-addcal-dropdown" hidden>
+						<a href="#" class="inscience-addcal-option" id="inscience-addcal-google">
+							<span aria-hidden="true">🗓</span> <?php esc_html_e( 'Google Calendar', 'inscience-training' ); ?>
+						</a>
+						<a href="#" class="inscience-addcal-option" id="inscience-addcal-ics">
+							<span aria-hidden="true">⬇</span> <?php esc_html_e( 'Download .ics', 'inscience-training' ); ?> <small><?php esc_html_e( '(Apple / Outlook)', 'inscience-training' ); ?></small>
+						</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
+
+	<!-- Floating notification widget (only rendered when a notification page is configured) -->
+	<?php if ( get_option( 'inscience_notification_page_id' ) ) : ?>
+	<div id="inscience-notify-widget" class="inscience-notify-widget" role="complementary" aria-label="<?php esc_attr_e( 'Course notification sign-up', 'inscience-training' ); ?>">
+		<!-- Collapsed tab – always visible so the widget can be reopened -->
+		<button class="inscience-notify-tab" id="inscience-notify-tab" aria-expanded="true" aria-controls="inscience-notify-panel">
+			<span class="inscience-notify-tab-icon" aria-hidden="true">🔔</span>
+			<span class="inscience-notify-tab-label"><?php esc_html_e( 'Notify me', 'inscience-training' ); ?></span>
+		</button>
+		<!-- Expanded panel -->
+		<div class="inscience-notify-panel" id="inscience-notify-panel">
+			<button class="inscience-notify-close" id="inscience-notify-close" aria-label="<?php esc_attr_e( 'Dismiss', 'inscience-training' ); ?>">&times;</button>
+			<p class="inscience-notify-heading"><?php esc_html_e( 'Get notified about upcoming courses', 'inscience-training' ); ?></p>
+			<a href="<?php echo esc_url( get_permalink( get_option( 'inscience_notification_page_id' ) ) ); ?>"
+				class="inscience-btn inscience-btn-notify">
+				<?php esc_html_e( 'Sign Up', 'inscience-training' ); ?>
+			</a>
+		</div>
+	</div>
+	<?php endif; ?>
 </div>

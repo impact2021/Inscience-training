@@ -55,7 +55,7 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 					__( 'Cancelled courses are hidden from the calendar automatically.', 'inscience-training' ),
 				),
 				'requires'    => __( 'No additional attributes required.', 'inscience-training' ),
-				'tip'         => __( 'Tip: Set the <strong>Enrolment Form Page</strong> in the Settings tab so the Enrol Now button links to the correct page.', 'inscience-training' ),
+				'tip'         => __( 'Tip: Set the <strong>Enrolment Form Page</strong> and the <strong>Notification Sign-up Page</strong> in the Settings tab so the Enrol Now button and the floating notification widget link to the correct pages.', 'inscience-training' ),
 			),
 			array(
 				'icon'        => '📝',
@@ -261,13 +261,26 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 
 				<div class="inscience-card">
 					<h2><?php esc_html_e( '📄 Pages', 'inscience-training' ); ?></h2>
-					<p class="description"><?php esc_html_e( 'Set the page that contains the [inscience_enrolment_form] shortcode. This page is used for payment redirect links.', 'inscience-training' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Set the pages used by the plugin for enrolments and notification sign-ups.', 'inscience-training' ); ?></p>
 					<p>
 						<label><strong><?php esc_html_e( 'Enrolment Form Page', 'inscience-training' ); ?></strong></label>
+						<span class="description"><?php esc_html_e( 'The page containing [inscience_enrolment_form]. Used for the Enrol Now button and payment redirects.', 'inscience-training' ); ?></span>
 						<?php
 						wp_dropdown_pages( array(
 							'name'              => 'inscience_enrolment_page_id',
 							'selected'          => get_option( 'inscience_enrolment_page_id', 0 ),
+							'show_option_none'  => __( '— Select —', 'inscience-training' ),
+							'option_none_value' => 0,
+						) );
+						?>
+					</p>
+					<p>
+						<label><strong><?php esc_html_e( 'Notification Sign-up Page', 'inscience-training' ); ?></strong></label>
+						<span class="description"><?php esc_html_e( 'The page containing [inscience_notification_signup]. Linked from the floating "Get notified" widget on the calendar.', 'inscience-training' ); ?></span>
+						<?php
+						wp_dropdown_pages( array(
+							'name'              => 'inscience_notification_page_id',
+							'selected'          => get_option( 'inscience_notification_page_id', 0 ),
 							'show_option_none'  => __( '— Select —', 'inscience-training' ),
 							'option_none_value' => 0,
 						) );

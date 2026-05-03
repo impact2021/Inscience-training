@@ -6,6 +6,9 @@
 		var calEl = document.getElementById('inscience-fullcalendar');
 		if (!calEl) return;
 
+		var allEvents    = inscienceCalendarData.events || [];
+		var activeFilter = null;
+
 		var calendar = new FullCalendar.Calendar(calEl, {
 			initialView: 'dayGridMonth',
 			headerToolbar: {
@@ -13,12 +16,42 @@
 				center: 'title',
 				right:  'dayGridMonth,listMonth'
 			},
-			events: inscienceCalendarData.events || [],
+			events: function (fetchInfo, successCallback) {
+				var filtered = activeFilter
+					? allEvents.filter(function (e) { return (e.extendedProps || {}).course_type === activeFilter; })
+					: allEvents;
+				successCallback(filtered);
+			},
+			eventContent: function (arg) {
+				var props = arg.event.extendedProps || {};
+				var container = document.createElement('div');
+				container.className = 'inscience-fc-event';
+
+				var titleEl = document.createElement('div');
+				titleEl.className = 'inscience-fc-title';
+				titleEl.textContent = arg.event.title;
+				container.appendChild(titleEl);
+
+				if (props.us_codes) {
+					var usEl = document.createElement('div');
+					usEl.className = 'inscience-fc-meta';
+					usEl.textContent = props.us_codes;
+					container.appendChild(usEl);
+				}
+
+				if (props.start_time) {
+					var timeEl = document.createElement('div');
+					timeEl.className = 'inscience-fc-meta';
+					timeEl.textContent = fmtTime(props.start_time) + (props.end_time ? ' – ' + fmtTime(props.end_time) : '');
+					container.appendChild(timeEl);
+				}
+
+				return { domNodes: [container] };
+			},
 			eventClick: function (info) {
 				openModal(info.event);
 			},
 			eventDidMount: function (info) {
-				// Add tooltip title
 				info.el.title = info.event.title;
 			},
 			height: 'auto',
@@ -26,6 +59,31 @@
 		});
 
 		calendar.render();
+
+		// --- Legend filters ---
+		var legendItems = document.querySelectorAll('.inscience-legend-item[data-filter]');
+
+		legendItems.forEach(function (item) {
+			item.addEventListener('click', function () {
+				var type = item.dataset.filter;
+				if (activeFilter === type) {
+					activeFilter = null;
+					legendItems.forEach(function (li) { li.classList.remove('inscience-legend-active'); });
+				} else {
+					activeFilter = type;
+					legendItems.forEach(function (li) { li.classList.remove('inscience-legend-active'); });
+					item.classList.add('inscience-legend-active');
+				}
+				calendar.refetchEvents();
+			});
+
+			item.addEventListener('keydown', function (e) {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					item.click();
+				}
+			});
+		});
 
 		// --- Modal logic ---
 		var overlay = document.getElementById('inscience-modal-overlay');
@@ -47,13 +105,17 @@
 
 		function openModal(event) {
 			if (!overlay) return;
-			currentEvent = event; // capture for Add-to-Calendar
+			currentEvent = event;
 			var props = event.extendedProps || {};
+
+			var timeDisplay = props.start_time
+				? fmtTime(props.start_time) + (props.end_time ? ' – ' + fmtTime(props.end_time) : '')
+				: '';
 
 			setText('.inscience-modal-title',   event.title);
 			setText('.inscience-modal-type',    props.course_type ? capitalise(props.course_type) : '—');
 			setText('.inscience-modal-date',    formatDateRange(event.start, event.end));
-			setText('.inscience-modal-time',    props.time || '—');
+			setText('.inscience-modal-time',    timeDisplay || '—');
 			setText('.inscience-modal-location',props.location || '—');
 			setText('.inscience-modal-us',      props.us_codes || '—');
 			setText('.inscience-modal-price',   props.price ? 'NZ$' + props.price : '—');
@@ -66,12 +128,10 @@
 				statusEl.className = 'inscience-modal-status inscience-badge inscience-badge-' + status;
 			}
 
-			// Toggle rows with empty values
-			toggleRow('.inscience-modal-row-time',     !!props.time);
+			toggleRow('.inscience-modal-row-time',     !!props.start_time);
 			toggleRow('.inscience-modal-row-us',       !!props.us_codes);
 			toggleRow('.inscience-modal-row-price',    !!props.price);
 
-			// Enrol button
 			var enrolBtn = overlay.querySelector('.inscience-modal-enrol');
 			if (enrolBtn) {
 				if (props.enrol_url && props.status !== 'cancelled' && props.status !== 'full') {
@@ -93,7 +153,6 @@
 		function closeModal() {
 			if (overlay) overlay.style.display = 'none';
 			document.body.style.overflow = '';
-			// Close add-to-calendar dropdown if open
 			if (addCalDropdown && !addCalDropdown.hidden) {
 				addCalDropdown.hidden = true;
 				if (addCalToggle) addCalToggle.setAttribute('aria-expanded', 'false');
@@ -119,7 +178,6 @@
 			var opts = { year: 'numeric', month: 'long', day: 'numeric' };
 			var startStr = start.toLocaleDateString('en-NZ', opts);
 
-			// FullCalendar end is exclusive, so subtract one day for display
 			if (end) {
 				var displayEnd = new Date(end.getTime() - 86400000);
 				if (displayEnd.toDateString() !== start.toDateString()) {
@@ -129,12 +187,25 @@
 			return startStr;
 		}
 
+		/** Format HH:MM as 9:00am / 5:00pm */
+		function fmtTime(t) {
+			if (!t) return '';
+			var parts = t.split(':');
+			if (parts.length < 2) return t;
+			var h = parseInt(parts[0], 10);
+			var m = parts[1] || '00';
+			if (isNaN(h)) return t;
+			var ampm = h >= 12 ? 'pm' : 'am';
+			var h12 = h % 12 || 12;
+			return h12 + (m !== '00' ? ':' + m : '') + ampm;
+		}
+
 		// --- Add-to-Calendar ---
 		var addCalToggle   = document.getElementById('inscience-addcal-toggle');
 		var addCalDropdown = document.getElementById('inscience-addcal-dropdown');
 		var addCalGoogle   = document.getElementById('inscience-addcal-google');
 		var addCalIcs      = document.getElementById('inscience-addcal-ics');
-		var currentEvent   = null; // set when modal opens
+		var currentEvent   = null;
 
 		if (addCalToggle && addCalDropdown) {
 			addCalToggle.addEventListener('click', function (e) {
@@ -144,7 +215,6 @@
 				addCalToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
 			});
 
-			// Close dropdown when clicking outside
 			document.addEventListener('click', function () {
 				if (!addCalDropdown.hidden) {
 					addCalDropdown.hidden = true;
@@ -179,31 +249,42 @@
 		}
 
 		function buildGoogleCalUrl(event) {
-			var props     = event.extendedProps || {};
-			var startDate = fmtDate(event.start);
-			// FullCalendar end is exclusive – same convention Google uses for all-day
-			var endDate   = event.end ? fmtDate(event.end) : fmtDate(nextDay(event.start));
-			var details   = props.description || '';
-			if (props.price)    details += (details ? '\n' : '') + 'Price: NZ$' + props.price;
-			if (props.us_codes) details += (details ? '\n' : '') + 'Unit Standards: ' + props.us_codes;
+			var props      = event.extendedProps || {};
+			var startDate  = fmtDate(event.start);
+			var endDate    = props.end_date ? props.end_date.replace(/-/g, '') : startDate;
+			var startTime  = (props.start_time || '').replace(/:/g, '') + '00';
+			var endTime    = (props.end_time   || '').replace(/:/g, '') + '00';
+
+			var startParam = startDate + 'T' + startTime;
+			var endParam   = endDate   + 'T' + endTime;
+
+			var details = props.description || '';
+			if (props.us_codes)  details += (details ? '\n' : '') + 'Unit Standards: ' + props.us_codes;
+			if (props.enrol_url) details += (details ? '\n' : '') + 'Course details: ' + props.enrol_url;
 
 			return 'https://www.google.com/calendar/render?action=TEMPLATE' +
 				'&text='     + encodeURIComponent(event.title) +
-				'&dates='    + startDate + '/' + endDate +
+				'&dates='    + startParam + '/' + endParam +
 				'&details='  + encodeURIComponent(details) +
 				'&location=' + encodeURIComponent(props.location || '');
 		}
 
 		function downloadIcs(event) {
-			var props     = event.extendedProps || {};
-			var startDate = fmtDate(event.start);
-			var endDate   = event.end ? fmtDate(event.end) : fmtDate(nextDay(event.start));
-			var details   = props.description || '';
-			if (props.price)    details += (details ? '\\n' : '') + 'Price: NZ$' + props.price;
-			if (props.us_codes) details += (details ? '\\n' : '') + 'Unit Standards: ' + props.us_codes;
+			var props      = event.extendedProps || {};
+			var startDate  = fmtDate(event.start);
+			var endDate    = props.end_date ? props.end_date.replace(/-/g, '') : startDate;
+			var startTime  = (props.start_time || '').replace(/:/g, '') + '00';
+			var endTime    = (props.end_time   || '').replace(/:/g, '') + '00';
 
-			var uid = 'inscience-' + (event.id || Date.now()) + '@inscience.co.nz';
-			var now = new Date();
+			var startDt = startDate + 'T' + startTime;
+			var endDt   = endDate   + 'T' + endTime;
+
+			var details = props.description || '';
+			if (props.us_codes)  details += (details ? '\\n' : '') + 'Unit Standards: ' + props.us_codes;
+			if (props.enrol_url) details += (details ? '\\n' : '') + 'Course details: ' + props.enrol_url;
+
+			var uid   = 'inscience-' + (event.id || Date.now()) + '@inscience.co.nz';
+			var now   = new Date();
 			var stamp = now.toISOString().replace(/[-:.]/g, '').slice(0, 15) + 'Z';
 
 			var lines = [
@@ -214,11 +295,12 @@
 				'BEGIN:VEVENT',
 				'UID:'         + uid,
 				'DTSTAMP:'     + stamp,
-				'DTSTART;VALUE=DATE:' + startDate,
-				'DTEND;VALUE=DATE:'   + endDate,
+				'DTSTART:'     + startDt,
+				'DTEND:'       + endDt,
 				'SUMMARY:'     + icsEscape(event.title),
 				'DESCRIPTION:' + icsEscape(details),
 				'LOCATION:'    + icsEscape(props.location || ''),
+				'URL:'         + (props.enrol_url || ''),
 				'END:VEVENT',
 				'END:VCALENDAR',
 			];
@@ -239,16 +321,10 @@
 		/** Format a Date object as YYYYMMDD */
 		function fmtDate(d) {
 			if (!d) return '';
-			var y = d.getFullYear();
-			var m = String(d.getMonth() + 1).padStart(2, '0');
+			var y   = d.getFullYear();
+			var m   = String(d.getMonth() + 1).padStart(2, '0');
 			var day = String(d.getDate()).padStart(2, '0');
 			return y + m + day;
-		}
-
-		function nextDay(d) {
-			var nd = new Date(d);
-			nd.setDate(nd.getDate() + 1);
-			return nd;
 		}
 
 		function icsEscape(str) {
@@ -266,7 +342,6 @@
 		var SESSION_KEY    = 'inscience_notify_collapsed';
 
 		if (notifyWidget && notifyTab) {
-			// Restore collapsed state from sessionStorage
 			if (sessionStorage.getItem(SESSION_KEY) === '1') {
 				notifyWidget.classList.add('inscience-notify-collapsed');
 				notifyTab.setAttribute('aria-expanded', 'false');

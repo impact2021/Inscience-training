@@ -289,7 +289,7 @@ class InScience_Admin {
 
 		// Save meta.
 		$meta_fields = array(
-			'course_type', 'course_date', 'course_end_date', 'course_time',
+			'course_type', 'course_date', 'course_end_date', 'course_start_time', 'course_end_time',
 			'course_location', 'course_city', 'course_capacity', 'course_price',
 			'course_us_codes', 'course_status',
 		);

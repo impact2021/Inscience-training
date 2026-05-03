@@ -233,6 +233,51 @@
 .inscience-legend-classroom { background: #003366; }
 .inscience-legend-zoom      { background: #00a651; }
 
+.inscience-legend-item[data-filter] {
+	cursor: pointer;
+	padding: 4px 10px 4px 6px;
+	border-radius: 20px;
+	border: 2px solid transparent;
+	transition: border-color 0.15s, background 0.15s;
+	user-select: none;
+}
+
+.inscience-legend-item[data-filter]:hover {
+	background: rgba(0, 0, 0, 0.05);
+}
+
+.inscience-legend-item[data-filter]:focus {
+	outline: none;
+	border-color: #003366;
+}
+
+.inscience-legend-item.inscience-legend-active {
+	border-color: #1d2327;
+	background: rgba(0, 0, 0, 0.06);
+}
+
+/* Calendar event inner content */
+.inscience-fc-event {
+	overflow: hidden;
+	padding: 1px 2px;
+}
+
+.inscience-fc-title {
+	font-weight: 600;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.inscience-fc-meta {
+	font-size: 0.78em;
+	opacity: 0.9;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-top: 1px;
+}
+
 #inscience-fullcalendar {
 	background: #fff;
 	border-radius: 6px;
@@ -410,7 +455,7 @@
 .inscience-notify-widget {
 	position: fixed;
 	right: 0;
-	bottom: 120px;
+	bottom: 20px;
 	z-index: 9998;
 	display: flex;
 	flex-direction: row;
@@ -525,7 +570,7 @@
 
 @media (max-width: 480px) {
 	.inscience-notify-widget {
-		bottom: 80px;
+		bottom: 12px;
 	}
 
 	.inscience-notify-panel {

@@ -9,8 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 <div class="inscience-calendar-wrap">
 	<!-- Legend -->
 	<div class="inscience-calendar-legend">
-		<span class="inscience-legend-item"><span class="inscience-legend-dot inscience-legend-classroom"></span><?php esc_html_e( 'Classroom', 'inscience-training' ); ?></span>
-		<span class="inscience-legend-item"><span class="inscience-legend-dot inscience-legend-zoom"></span><?php esc_html_e( 'Zoom (Online)', 'inscience-training' ); ?></span>
+		<span class="inscience-legend-item" data-filter="classroom" role="button" tabindex="0">
+			<span class="inscience-legend-dot inscience-legend-classroom"></span><?php esc_html_e( 'Classroom', 'inscience-training' ); ?>
+		</span>
+		<span class="inscience-legend-item" data-filter="zoom" role="button" tabindex="0">
+			<span class="inscience-legend-dot inscience-legend-zoom"></span><?php esc_html_e( 'Zoom (Online)', 'inscience-training' ); ?>
+		</span>
 	</div>
 
 	<!-- FullCalendar container -->

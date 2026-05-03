@@ -62,11 +62,18 @@ $editing = ! empty( $course );
 						</p>
 					</div>
 
-					<p>
-						<label for="course_time"><strong><?php esc_html_e( 'Time (e.g. 9:00am – 5:00pm)', 'inscience-training' ); ?></strong></label>
-						<input type="text" id="course_time" name="course_time" class="regular-text"
-							value="<?php echo esc_attr( $meta['course_time'] ?? '' ); ?>">
-					</p>
+					<div class="inscience-two-col">
+						<p>
+							<label for="course_start_time"><strong><?php esc_html_e( 'Start Time', 'inscience-training' ); ?></strong></label>
+							<input type="time" id="course_start_time" name="course_start_time"
+								value="<?php echo esc_attr( $meta['course_start_time'] ?? '' ); ?>">
+						</p>
+						<p>
+							<label for="course_end_time"><strong><?php esc_html_e( 'End Time', 'inscience-training' ); ?></strong></label>
+							<input type="time" id="course_end_time" name="course_end_time"
+								value="<?php echo esc_attr( $meta['course_end_time'] ?? '' ); ?>">
+						</p>
+					</div>
 				</div>
 			</div>
 
@@ -147,7 +154,7 @@ $editing = ! empty( $course );
 
 					<p>
 						<label for="course_price"><strong><?php esc_html_e( 'Price (NZD)', 'inscience-training' ); ?></strong></label>
-						<input type="number" id="course_price" name="course_price" min="0" step="0.01" class="regular-text"
+						<input type="number" id="course_price" name="course_price" min="0" step="0.01" class="small-text"
 							value="<?php echo esc_attr( $meta['course_price'] ?? '' ); ?>">
 					</p>
 				</div>

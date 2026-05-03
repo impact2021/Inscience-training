@@ -3,7 +3,7 @@
  * Plugin Name:       InScience Training
  * Plugin URI:        https://www.inscience.co.nz/
  * Description:       Manages course listings, enrolments, payments, and notifications for InScience Ltd.
- * Version:           1.1.4
+ * Version:           1.1.5
  * Author:            InScience Ltd
  * Author URI:        https://www.inscience.co.nz/
  * License:           GPL-2.0+
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants
-define( 'INSCIENCE_VERSION', '1.1.4' );
+define( 'INSCIENCE_VERSION', '1.1.5' );
 define( 'INSCIENCE_PLUGIN_FILE', __FILE__ );
 define( 'INSCIENCE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'INSCIENCE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

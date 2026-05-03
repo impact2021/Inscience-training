@@ -128,16 +128,17 @@ class InScience_Course_CPT {
 		}
 
 		$fields = array(
-			'course_type'     => 'sanitize_text_field',
-			'course_date'     => 'sanitize_text_field',
-			'course_end_date' => 'sanitize_text_field',
-			'course_time'     => 'sanitize_text_field',
-			'course_location' => 'sanitize_text_field',
-			'course_city'     => 'sanitize_text_field',
-			'course_capacity' => 'absint',
-			'course_price'    => 'floatval',
-			'course_us_codes' => 'sanitize_text_field',
-			'course_status'   => 'sanitize_text_field',
+			'course_type'       => 'sanitize_text_field',
+			'course_date'       => 'sanitize_text_field',
+			'course_end_date'   => 'sanitize_text_field',
+			'course_start_time' => 'sanitize_text_field',
+			'course_end_time'   => 'sanitize_text_field',
+			'course_location'   => 'sanitize_text_field',
+			'course_city'       => 'sanitize_text_field',
+			'course_capacity'   => 'absint',
+			'course_price'      => 'floatval',
+			'course_us_codes'   => 'sanitize_text_field',
+			'course_status'     => 'sanitize_text_field',
 		);
 
 		foreach ( $fields as $key => $sanitize ) {
@@ -156,7 +157,7 @@ class InScience_Course_CPT {
 	 */
 	public static function get_course_meta( $post_id ) {
 		$keys = array(
-			'course_type', 'course_date', 'course_end_date', 'course_time',
+			'course_type', 'course_date', 'course_end_date', 'course_start_time', 'course_end_time',
 			'course_location', 'course_city', 'course_capacity', 'course_price',
 			'course_us_codes', 'course_status',
 		);
@@ -209,7 +210,8 @@ class InScience_Course_CPT {
 				'type'        => $meta['course_type'],
 				'date'        => $meta['course_date'],
 				'end_date'    => $meta['course_end_date'],
-				'time'        => $meta['course_time'],
+				'start_time'  => $meta['course_start_time'],
+				'end_time'    => $meta['course_end_time'],
 				'location'    => $meta['course_location'],
 				'city'        => $meta['course_city'],
 				'capacity'    => (int) $meta['course_capacity'],

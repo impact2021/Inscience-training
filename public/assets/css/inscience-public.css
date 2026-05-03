@@ -234,24 +234,19 @@
 }
 
 /* -------------------------------------------------------------------------
-   Calendar + inline form two-column layout
+   Calendar + inline form stacked layout
    ------------------------------------------------------------------------- */
 .inscience-cal-with-form {
-	display: grid;
-	grid-template-columns: 1.3fr 1fr;
-	gap: 28px;
-	align-items: start;
-	max-width: none;
-	margin: 0;
+	max-width: 1000px;
+	margin: 0 auto;
 }
 
 .inscience-cal-main {
-	min-width: 0;
+	margin-bottom: 36px;
 }
 
 .inscience-cal-form-panel {
-	position: sticky;
-	top: 24px;
+	/* No sticky positioning – form sits below the calendar, full-width */
 }
 
 .inscience-cal-form-heading {
@@ -260,21 +255,6 @@
 	color: #003366;
 	border-bottom: 2px solid #003366;
 	padding-bottom: 10px;
-}
-
-/* Override max-width on the form when used inline */
-.inscience-cal-form-panel .inscience-form {
-	max-width: none;
-}
-
-@media (max-width: 900px) {
-	.inscience-cal-with-form {
-		grid-template-columns: 1fr;
-	}
-
-	.inscience-cal-form-panel {
-		position: static;
-	}
 }
 
 /* -------------------------------------------------------------------------

@@ -190,11 +190,7 @@
 			if (select) {
 				select.value = courseId;
 				// Trigger change so the Zoom declaration updates.
-				var evt = document.createEvent ? document.createEvent('Event') : new Event('change');
-				if (evt.initEvent) {
-					evt.initEvent('change', true, true);
-				}
-				select.dispatchEvent(evt);
+				select.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
 				// Also trigger jQuery if available (enrolment.js uses jQuery).
 				if (window.jQuery) {
 					window.jQuery(select).trigger('change');

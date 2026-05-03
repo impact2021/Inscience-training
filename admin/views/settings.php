@@ -8,6 +8,13 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 $active_tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'settings';
 $base_url   = admin_url( 'admin.php?page=inscience-settings' );
+
+// Load saved course titles.
+$saved_titles_raw = get_option( 'inscience_course_titles', '[]' );
+$saved_titles     = json_decode( $saved_titles_raw, true );
+if ( ! is_array( $saved_titles ) ) {
+	$saved_titles = array();
+}
 ?>
 <div class="wrap inscience-admin-wrap">
 	<h1 class="inscience-page-title">
@@ -22,6 +29,11 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 			<span class="dashicons dashicons-admin-generic"></span>
 			<?php esc_html_e( 'Settings', 'inscience-training' ); ?>
 		</a>
+		<a href="<?php echo esc_url( $base_url . '&tab=course-titles' ); ?>"
+			class="nav-tab<?php echo 'course-titles' === $active_tab ? ' nav-tab-active' : ''; ?>">
+			<span class="dashicons dashicons-list-view"></span>
+			<?php esc_html_e( 'Course Titles', 'inscience-training' ); ?>
+		</a>
 		<a href="<?php echo esc_url( $base_url . '&tab=shortcodes' ); ?>"
 			class="nav-tab<?php echo 'shortcodes' === $active_tab ? ' nav-tab-active' : ''; ?>">
 			<span class="dashicons dashicons-shortcode"></span>
@@ -29,7 +41,45 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 		</a>
 	</nav>
 
-	<?php if ( 'shortcodes' === $active_tab ) : ?>
+	<?php if ( 'course-titles' === $active_tab ) : ?>
+
+	<!-- =====================================================================
+	     COURSE TITLES TAB
+	     ===================================================================== -->
+	<div class="inscience-tab-content">
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<?php wp_nonce_field( 'inscience_save_course_titles_action', 'inscience_nonce' ); ?>
+			<input type="hidden" name="action" value="inscience_save_course_titles">
+
+			<div class="inscience-card">
+				<h2>
+					<span class="dashicons dashicons-list-view"></span>
+					<?php esc_html_e( 'Predefined Course Titles', 'inscience-training' ); ?>
+				</h2>
+				<p class="description">
+					<?php esc_html_e( 'Enter one course title per line. These titles will appear as suggestions when adding a new course, and as filter options above the public calendar.', 'inscience-training' ); ?>
+				</p>
+				<table class="form-table">
+					<tr>
+						<th><label for="inscience_course_titles"><?php esc_html_e( 'Course Titles', 'inscience-training' ); ?></label></th>
+						<td>
+							<textarea id="inscience_course_titles" name="inscience_course_titles"
+								class="large-text" rows="10"
+								placeholder="<?php esc_attr_e( 'e.g. NZQA Oral fluid drug testing US32327 & 32328', 'inscience-training' ); ?>"
+							><?php echo esc_textarea( implode( "\n", $saved_titles ) ); ?></textarea>
+							<p class="description"><?php esc_html_e( 'One title per line. Blank lines are ignored. Duplicate titles are automatically removed.', 'inscience-training' ); ?></p>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<p>
+				<button type="submit" class="button button-primary button-large"><?php esc_html_e( 'Save Course Titles', 'inscience-training' ); ?></button>
+			</p>
+		</form>
+	</div>
+
+	<?php elseif ( 'shortcodes' === $active_tab ) : ?>
 
 	<!-- =====================================================================
 	     SHORTCODES TAB
@@ -47,15 +97,24 @@ $base_url   = admin_url( 'admin.php?page=inscience-settings' );
 				'tag'         => '[inscience_calendar]',
 				'title'       => __( 'Course Calendar', 'inscience-training' ),
 				'purpose'     => __( 'Displays a full interactive calendar (month view and list view) of all upcoming, published courses. Each event is colour-coded by delivery type — navy for Classroom courses and green for Zoom courses.', 'inscience-training' ),
-				'attributes'  => array(),
+				'attributes'  => array(
+					array(
+						'name'     => 'inline_form',
+						'type'     => 'boolean',
+						'default'  => '0 (enrolment form is on a separate page)',
+						'example'  => '[inscience_calendar inline_form="1"]',
+						'desc'     => __( 'When set to 1, the enrolment form is rendered directly beside the calendar (right column on desktop, below on mobile). Clicking Enrol Now in the event modal scrolls to the form and pre-selects the course â no separate page required.', 'inscience-training' ),
+					),
+				),
 				'behaviour'   => array(
 					__( 'Clicking any event opens a detail modal showing the course title, delivery type, dates, time, location/city, NZQA unit standard codes, price, and enrolment status.', 'inscience-training' ),
 					__( 'The modal includes an <strong>Enrol Now</strong> button that links directly to the enrolment form page with the course pre-selected.', 'inscience-training' ),
+					__( 'Predefined course titles (managed under Settings â Course Titles) appear as a filter dropdown above the calendar, letting visitors narrow courses by title and/or delivery type.', 'inscience-training' ),
 					__( 'Courses marked as <em>Full</em> show "Course Full" instead of the Enrol Now button.', 'inscience-training' ),
 					__( 'Cancelled courses are hidden from the calendar automatically.', 'inscience-training' ),
 				),
 				'requires'    => __( 'No additional attributes required.', 'inscience-training' ),
-				'tip'         => __( 'Tip: Set the <strong>Enrolment Form Page</strong> and the <strong>Notification Sign-up Page</strong> in the Settings tab so the Enrol Now button and the floating notification widget link to the correct pages.', 'inscience-training' ),
+				'tip'         => __( 'Tip: Use <code>inline_form="1"</code> for an all-in-one page, or set the <strong>Enrolment Form Page</strong> in Settings for a separate enrolment page. Set the <strong>Notification Sign-up Page</strong> in Settings so the floating notification widget links to the correct page.', 'inscience-training' ),
 			),
 			array(
 				'icon'        => 'dashicons-edit',

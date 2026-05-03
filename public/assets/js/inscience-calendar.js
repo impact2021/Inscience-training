@@ -6,8 +6,10 @@
 		var calEl = document.getElementById('inscience-fullcalendar');
 		if (!calEl) return;
 
-		var allEvents    = inscienceCalendarData.events || [];
-		var activeFilter = null;
+		var allEvents        = inscienceCalendarData.events || [];
+		var activeTypeFilter  = null;
+		var activeTitleFilter = '';
+		var inlineForm        = !! inscienceCalendarData.inlineForm;
 
 		var calendar = new FullCalendar.Calendar(calEl, {
 			initialView: 'dayGridMonth',
@@ -17,9 +19,16 @@
 				right:  'dayGridMonth,listMonth'
 			},
 			events: function (fetchInfo, successCallback) {
-				var filtered = activeFilter
-					? allEvents.filter(function (e) { return (e.extendedProps || {}).course_type === activeFilter; })
-					: allEvents;
+				var filtered = allEvents.filter(function (e) {
+					var props = e.extendedProps || {};
+					if (activeTypeFilter && props.course_type !== activeTypeFilter) {
+						return false;
+					}
+					if (activeTitleFilter && props.course_title_base !== activeTitleFilter) {
+						return false;
+					}
+					return true;
+				});
 				successCallback(filtered);
 			},
 			eventContent: function (arg) {
@@ -60,17 +69,17 @@
 
 		calendar.render();
 
-		// --- Legend filters ---
+		// --- Type legend filters ---
 		var legendItems = document.querySelectorAll('.inscience-legend-item[data-filter]');
 
 		legendItems.forEach(function (item) {
 			item.addEventListener('click', function () {
 				var type = item.dataset.filter;
-				if (activeFilter === type) {
-					activeFilter = null;
+				if (activeTypeFilter === type) {
+					activeTypeFilter = null;
 					legendItems.forEach(function (li) { li.classList.remove('inscience-legend-active'); });
 				} else {
-					activeFilter = type;
+					activeTypeFilter = type;
 					legendItems.forEach(function (li) { li.classList.remove('inscience-legend-active'); });
 					item.classList.add('inscience-legend-active');
 				}
@@ -84,6 +93,15 @@
 				}
 			});
 		});
+
+		// --- Title filter ---
+		var titleFilterEl = document.getElementById('inscience-title-filter');
+		if (titleFilterEl) {
+			titleFilterEl.addEventListener('change', function () {
+				activeTitleFilter = titleFilterEl.value;
+				calendar.refetchEvents();
+			});
+		}
 
 		// --- Modal logic ---
 		var overlay = document.getElementById('inscience-modal-overlay');
@@ -134,9 +152,25 @@
 
 			var enrolBtn = overlay.querySelector('.inscience-modal-enrol');
 			if (enrolBtn) {
-				if (props.enrol_url && props.status !== 'cancelled' && props.status !== 'full') {
-					enrolBtn.href = props.enrol_url;
+				if (props.status !== 'cancelled' && props.status !== 'full') {
+					enrolBtn.textContent = 'Enrol Now';
 					enrolBtn.style.display = '';
+
+					if (inlineForm) {
+						// Use inline form: remove any old listener by cloning, then add new one.
+						var newBtn = enrolBtn.cloneNode(true);
+						newBtn.href = '#';
+						newBtn.addEventListener('click', function (e) {
+							e.preventDefault();
+							closeModal();
+							preselectInlineForm(String(event.id), props.course_type);
+						});
+						enrolBtn.parentNode.replaceChild(newBtn, enrolBtn);
+					} else if (props.enrol_url) {
+						enrolBtn.href = props.enrol_url;
+					} else {
+						enrolBtn.style.display = 'none';
+					}
 				} else if (props.status === 'full') {
 					enrolBtn.textContent = 'Course Full';
 					enrolBtn.style.display = '';
@@ -148,6 +182,27 @@
 
 			overlay.style.display = 'flex';
 			document.body.style.overflow = 'hidden';
+		}
+
+		function preselectInlineForm(courseId, courseType) {
+			var formPanel = document.getElementById('inscience-enrol-inline');
+			var select    = document.getElementById('course_id');
+			if (select) {
+				select.value = courseId;
+				// Trigger change so the Zoom declaration updates.
+				var evt = document.createEvent ? document.createEvent('Event') : new Event('change');
+				if (evt.initEvent) {
+					evt.initEvent('change', true, true);
+				}
+				select.dispatchEvent(evt);
+				// Also trigger jQuery if available (enrolment.js uses jQuery).
+				if (window.jQuery) {
+					window.jQuery(select).trigger('change');
+				}
+			}
+			if (formPanel) {
+				formPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}
 		}
 
 		function closeModal() {
@@ -363,6 +418,14 @@
 					notifyTab.setAttribute('aria-expanded', 'false');
 					sessionStorage.setItem(SESSION_KEY, '1');
 				});
+			}
+		}
+
+		// --- Inline form: trigger Zoom declaration on page load if course pre-selected ---
+		if (inlineForm && window.jQuery) {
+			var initialSelect = document.getElementById('course_id');
+			if (initialSelect && initialSelect.value) {
+				window.jQuery(initialSelect).trigger('change');
 			}
 		}
 	});

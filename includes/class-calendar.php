@@ -67,10 +67,28 @@ class InScience_Calendar {
 	 * Shortcode handler.
 	 */
 	public function render_shortcode( $atts ) {
+		$atts = shortcode_atts( array( 'inline_form' => '0' ), $atts, 'inscience_calendar' );
+		$inline_form = ! empty( $atts['inline_form'] ) && '0' !== $atts['inline_form'];
+
 		wp_enqueue_style( 'fullcalendar' );
 		wp_enqueue_style( 'inscience-public' );
 		wp_enqueue_script( 'fullcalendar' );
 		wp_enqueue_script( 'inscience-calendar' );
+
+		if ( $inline_form ) {
+			wp_enqueue_script(
+				'inscience-enrolment',
+				INSCIENCE_PLUGIN_URL . 'public/assets/js/inscience-enrolment.js',
+				array( 'jquery' ),
+				INSCIENCE_VERSION,
+				true
+			);
+			wp_localize_script( 'inscience-enrolment', 'inscienceEnrolment', array(
+				'ajaxurl'   => admin_url( 'admin-ajax.php' ),
+				'nonce'     => wp_create_nonce( 'inscience_enrolment' ),
+				'stripe_pk' => get_option( 'inscience_stripe_public_key', '' ),
+			) );
+		}
 
 		$courses = InScience_Course_CPT::get_upcoming_courses();
 		$events  = array();
@@ -105,9 +123,11 @@ class InScience_Calendar {
 			}
 
 			$enrol_url = '';
-			$enrolment_page = get_option( 'inscience_enrolment_page_id' );
-			if ( $enrolment_page ) {
-				$enrol_url = add_query_arg( 'course_id', $course['id'], get_permalink( $enrolment_page ) );
+			if ( ! $inline_form ) {
+				$enrolment_page = get_option( 'inscience_enrolment_page_id' );
+				if ( $enrolment_page ) {
+					$enrol_url = add_query_arg( 'course_id', $course['id'], get_permalink( $enrolment_page ) );
+				}
 			}
 
 			$events[] = array(
@@ -118,27 +138,41 @@ class InScience_Calendar {
 				'backgroundColor' => $color,
 				'borderColor'     => $color,
 				'extendedProps'   => array(
-					'course_type'   => $course['type'],
-					'us_codes'      => $course['us_codes'],
-					'location'      => $location,
-					'city'          => $course['city'],
-					'start_time'    => $course['start_time'],
-					'end_time'      => $course['end_time'],
-					'end_date'      => $course['end_date'] ?: $course['date'],
-					'price'         => number_format( (float) $course['price'], 2 ),
-					'capacity'      => $course['capacity'],
-					'status'        => $course['status'],
-					'description'   => $course['description'],
-					'enrol_url'     => $enrol_url,
+					'course_title_base' => $course['title'],
+					'course_type'       => $course['type'],
+					'us_codes'          => $course['us_codes'],
+					'location'          => $location,
+					'city'              => $course['city'],
+					'start_time'        => $course['start_time'],
+					'end_time'          => $course['end_time'],
+					'end_date'          => $course['end_date'] ?: $course['date'],
+					'price'             => number_format( (float) $course['price'], 2 ),
+					'capacity'          => $course['capacity'],
+					'status'            => $course['status'],
+					'description'       => $course['description'],
+					'enrol_url'         => $enrol_url,
 				),
 			);
 		}
 
+		// Build predefined course titles for the filter dropdown.
+		$predefined_titles = json_decode( get_option( 'inscience_course_titles', '[]' ), true );
+		if ( ! is_array( $predefined_titles ) ) {
+			$predefined_titles = array();
+		}
+
 		wp_localize_script( 'inscience-calendar', 'inscienceCalendarData', array(
-			'events'     => $events,
-			'ajaxurl'    => admin_url( 'admin-ajax.php' ),
-			'enrolPage'  => get_option( 'inscience_enrolment_page_id' ) ? get_permalink( get_option( 'inscience_enrolment_page_id' ) ) : '',
+			'events'       => $events,
+			'ajaxurl'      => admin_url( 'admin-ajax.php' ),
+			'enrolPage'    => get_option( 'inscience_enrolment_page_id' ) ? get_permalink( get_option( 'inscience_enrolment_page_id' ) ) : '',
+			'inlineForm'   => $inline_form,
+			'courseTitles' => $predefined_titles,
 		) );
+
+		// If inline form, prepare variables for the enrolment form template.
+		if ( $inline_form ) {
+			$preset_course_id = isset( $_GET['course_id'] ) ? absint( $_GET['course_id'] ) : 0;
+		}
 
 		ob_start();
 		include INSCIENCE_PLUGIN_DIR . 'public/views/calendar.php';

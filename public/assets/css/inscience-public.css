@@ -203,6 +203,81 @@
 }
 
 /* -------------------------------------------------------------------------
+   Calendar – filters bar (legend + title filter)
+   ------------------------------------------------------------------------- */
+.inscience-cal-filters {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.inscience-title-filter-wrap {
+	flex: 1 1 220px;
+}
+
+.inscience-title-filter {
+	width: 100%;
+	padding: 6px 10px;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	font-size: 14px;
+	background: #fff;
+	cursor: pointer;
+}
+
+.inscience-title-filter:focus {
+	border-color: #003366;
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(0, 51, 102, 0.15);
+}
+
+/* -------------------------------------------------------------------------
+   Calendar + inline form two-column layout
+   ------------------------------------------------------------------------- */
+.inscience-cal-with-form {
+	display: grid;
+	grid-template-columns: 3fr 2fr;
+	gap: 28px;
+	align-items: start;
+	max-width: none;
+	margin: 0;
+}
+
+.inscience-cal-main {
+	min-width: 0;
+}
+
+.inscience-cal-form-panel {
+	position: sticky;
+	top: 24px;
+}
+
+.inscience-cal-form-heading {
+	margin: 0 0 16px;
+	font-size: 20px;
+	color: #003366;
+	border-bottom: 2px solid #003366;
+	padding-bottom: 10px;
+}
+
+/* Override max-width on the form when used inline */
+.inscience-cal-form-panel .inscience-form {
+	max-width: none;
+}
+
+@media (max-width: 900px) {
+	.inscience-cal-with-form {
+		grid-template-columns: 1fr;
+	}
+
+	.inscience-cal-form-panel {
+		position: static;
+	}
+}
+
+/* -------------------------------------------------------------------------
    Calendar
    ------------------------------------------------------------------------- */
 .inscience-calendar-wrap {

@@ -3,18 +3,39 @@
  * Public calendar view.
  *
  * @package InScience_Training
+ * Variables available: $inline_form (bool), $preset_course_id (int, only when $inline_form is true)
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 ?>
-<div class="inscience-calendar-wrap">
-	<!-- Legend -->
-	<div class="inscience-calendar-legend">
-		<span class="inscience-legend-item" data-filter="classroom" role="button" tabindex="0">
-			<span class="inscience-legend-dot inscience-legend-classroom"></span><?php esc_html_e( 'Classroom', 'inscience-training' ); ?>
-		</span>
-		<span class="inscience-legend-item" data-filter="zoom" role="button" tabindex="0">
-			<span class="inscience-legend-dot inscience-legend-zoom"></span><?php esc_html_e( 'Zoom (Online)', 'inscience-training' ); ?>
-		</span>
+<div class="inscience-calendar-wrap<?php echo $inline_form ? ' inscience-cal-with-form' : ''; ?>">
+<div class="inscience-cal-main">
+	<!-- Filters bar -->
+	<div class="inscience-cal-filters">
+		<!-- Type legend / filter -->
+		<div class="inscience-calendar-legend">
+			<span class="inscience-legend-item" data-filter="classroom" role="button" tabindex="0">
+				<span class="inscience-legend-dot inscience-legend-classroom"></span><?php esc_html_e( 'Classroom', 'inscience-training' ); ?>
+			</span>
+			<span class="inscience-legend-item" data-filter="zoom" role="button" tabindex="0">
+				<span class="inscience-legend-dot inscience-legend-zoom"></span><?php esc_html_e( 'Zoom (Online)', 'inscience-training' ); ?>
+			</span>
+		</div>
+
+		<?php
+		$filter_titles = isset( $predefined_titles ) ? $predefined_titles : array();
+		if ( ! empty( $filter_titles ) ) :
+		?>
+		<!-- Course title filter -->
+		<div class="inscience-title-filter-wrap">
+			<label for="inscience-title-filter" class="screen-reader-text"><?php esc_html_e( 'Filter by course title', 'inscience-training' ); ?></label>
+			<select id="inscience-title-filter" class="inscience-title-filter">
+				<option value=""><?php esc_html_e( '— All course titles —', 'inscience-training' ); ?></option>
+				<?php foreach ( $filter_titles as $ft ) : ?>
+				<option value="<?php echo esc_attr( $ft ); ?>"><?php echo esc_html( $ft ); ?></option>
+				<?php endforeach; ?>
+			</select>
+		</div>
+		<?php endif; ?>
 	</div>
 
 	<!-- FullCalendar container -->
@@ -94,4 +115,30 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 		</div>
 	</div>
 	<?php endif; ?>
+</div><!-- /.inscience-cal-main -->
+
+<?php if ( $inline_form ) :
+	// Provide variables expected by the enrolment form template.
+	$courses   = InScience_Course_CPT::get_upcoming_courses();
+	$course_id = isset( $preset_course_id ) ? $preset_course_id : 0;
+
+	// Success/error messages when redirected back with a status parameter.
+	$message = '';
+	if ( isset( $_GET['inscience_status'] ) ) {
+		if ( 'success' === sanitize_text_field( wp_unslash( $_GET['inscience_status'] ) ) ) {
+			$message = '<div class="inscience-notice inscience-success">' . esc_html__( 'Thank you! Your enrolment has been received. You will receive a confirmation email shortly.', 'inscience-training' ) . '</div>';
+		} elseif ( 'payment_complete' === sanitize_text_field( wp_unslash( $_GET['inscience_status'] ) ) ) {
+			$message = '<div class="inscience-notice inscience-success">' . esc_html__( 'Payment received! Your enrolment is confirmed.', 'inscience-training' ) . '</div>';
+		} elseif ( 'error' === sanitize_text_field( wp_unslash( $_GET['inscience_status'] ) ) ) {
+			$error_msg = isset( $_GET['inscience_msg'] ) ? sanitize_text_field( wp_unslash( $_GET['inscience_msg'] ) ) : __( 'An error occurred. Please try again.', 'inscience-training' );
+			$message = '<div class="inscience-notice inscience-error">' . esc_html( $error_msg ) . '</div>';
+		}
+	}
+?>
+<div class="inscience-cal-form-panel" id="inscience-enrol-inline">
+	<h2 class="inscience-cal-form-heading"><?php esc_html_e( 'Enrol in a Course', 'inscience-training' ); ?></h2>
+	<?php echo $message; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	<?php include INSCIENCE_PLUGIN_DIR . 'public/views/enrolment-form.php'; ?>
 </div>
+<?php endif; ?>
+</div><!-- /.inscience-calendar-wrap -->

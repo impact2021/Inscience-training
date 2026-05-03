@@ -29,6 +29,7 @@ class InScience_Admin {
 		add_action( 'admin_post_inscience_update_enrolment', array( $this, 'handle_update_enrolment' ) );
 		add_action( 'admin_post_inscience_save_email_template', array( $this, 'handle_save_email_template' ) );
 		add_action( 'admin_post_inscience_save_settings', array( $this, 'handle_save_settings' ) );
+		add_action( 'admin_post_inscience_save_course_titles', array( $this, 'handle_save_course_titles' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 		add_action( 'admin_bar_menu', array( $this, 'admin_bar_version' ), 100 );
 	}
@@ -382,6 +383,26 @@ class InScience_Admin {
 		exit;
 	}
 
+	public function handle_save_course_titles() {
+		check_admin_referer( 'inscience_save_course_titles_action', 'inscience_nonce' );
+
+		if ( ! current_user_can( 'manage_inscience_courses' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'inscience-training' ) );
+		}
+
+		$raw    = isset( $_POST['inscience_course_titles'] ) ? wp_unslash( $_POST['inscience_course_titles'] ) : '';
+		$lines  = array_filter( array_map( 'sanitize_text_field', explode( "\n", $raw ) ) );
+		$titles = array_values( array_unique( $lines ) );
+
+		update_option( 'inscience_course_titles', wp_json_encode( $titles ) );
+
+		wp_safe_redirect( add_query_arg(
+			array( 'page' => 'inscience-settings', 'tab' => 'course-titles', 'inscience_msg' => 'course_titles_saved' ),
+			admin_url( 'admin.php' )
+		) );
+		exit;
+	}
+
 	public function handle_save_settings() {
 		check_admin_referer( 'inscience_save_settings_action', 'inscience_nonce' );
 
@@ -441,12 +462,13 @@ class InScience_Admin {
 		}
 		$msg = sanitize_text_field( wp_unslash( $_GET['inscience_msg'] ) );
 		$notices = array(
-			'course_saved'      => array( 'success', __( 'Course saved successfully.', 'inscience-training' ) ),
-			'course_deleted'    => array( 'success', __( 'Course deleted.', 'inscience-training' ) ),
-			'course_error'      => array( 'error',   __( 'Error saving course. Please try again.', 'inscience-training' ) ),
-			'enrolment_updated' => array( 'success', __( 'Enrolment updated.', 'inscience-training' ) ),
-			'email_saved'       => array( 'success', __( 'Email template saved.', 'inscience-training' ) ),
-			'settings_saved'    => array( 'success', __( 'Settings saved.', 'inscience-training' ) ),
+			'course_saved'        => array( 'success', __( 'Course saved successfully.', 'inscience-training' ) ),
+			'course_deleted'      => array( 'success', __( 'Course deleted.', 'inscience-training' ) ),
+			'course_error'        => array( 'error',   __( 'Error saving course. Please try again.', 'inscience-training' ) ),
+			'enrolment_updated'   => array( 'success', __( 'Enrolment updated.', 'inscience-training' ) ),
+			'email_saved'         => array( 'success', __( 'Email template saved.', 'inscience-training' ) ),
+			'settings_saved'      => array( 'success', __( 'Settings saved.', 'inscience-training' ) ),
+			'course_titles_saved' => array( 'success', __( 'Course titles saved.', 'inscience-training' ) ),
 		);
 		if ( isset( $notices[ $msg ] ) ) {
 			list( $type, $text ) = $notices[ $msg ];

@@ -30,8 +30,23 @@ $editing = ! empty( $course );
 
 					<p>
 						<label for="course_title"><strong><?php esc_html_e( 'Course Title', 'inscience-training' ); ?> <span class="required">*</span></strong></label>
+						<?php
+						$predefined_titles = json_decode( get_option( 'inscience_course_titles', '[]' ), true );
+						if ( ! is_array( $predefined_titles ) ) {
+							$predefined_titles = array();
+						}
+						?>
 						<input type="text" id="course_title" name="course_title" class="widefat" required
-							value="<?php echo esc_attr( $editing ? $course->post_title : '' ); ?>">
+							list="inscience-course-titles-list"
+							value="<?php echo esc_attr( $editing ? $course->post_title : '' ); ?>"
+							placeholder="<?php esc_attr_e( 'Type or select a predefined title…', 'inscience-training' ); ?>">
+						<?php if ( ! empty( $predefined_titles ) ) : ?>
+						<datalist id="inscience-course-titles-list">
+							<?php foreach ( $predefined_titles as $title ) : ?>
+							<option value="<?php echo esc_attr( $title ); ?>">
+							<?php endforeach; ?>
+						</datalist>
+						<?php endif; ?>
 					</p>
 
 					<p>

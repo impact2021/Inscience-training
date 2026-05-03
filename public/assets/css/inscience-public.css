@@ -115,8 +115,7 @@
 
 /* Payment options */
 .inscience-payment-options {
-	flex-direction: row;
-	flex-wrap: wrap;
+	flex-direction: column;
 	gap: 12px;
 }
 

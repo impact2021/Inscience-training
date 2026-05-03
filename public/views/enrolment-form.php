@@ -27,7 +27,11 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 						}
 						$label .= $c['title'];
 						if ( $c['date'] ) {
-							$label .= ' (' . gmdate( 'd M Y', strtotime( $c['date'] ) ) . ')';
+							$date_str = gmdate( 'd M Y', strtotime( $c['date'] ) );
+							if ( $c['end_date'] && $c['end_date'] !== $c['date'] ) {
+								$date_str .= ' – ' . gmdate( 'd M Y', strtotime( $c['end_date'] ) );
+							}
+							$label .= ' (' . $date_str . ')';
 						}
 						if ( 'classroom' === $c['type'] && $c['city'] ) {
 							$city = InScience_Course_CPT::NZ_CITIES[ $c['city'] ] ?? ucfirst( $c['city'] );

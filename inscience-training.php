@@ -3,7 +3,7 @@
  * Plugin Name:       InScience Training
  * Plugin URI:        https://www.inscience.co.nz/
  * Description:       Manages course listings, enrolments, payments, and notifications for InScience Ltd.
- * Version:           1.2.6
+ * Version:           1.2.7
  * Author:            InScience Ltd
  * Author URI:        https://www.inscience.co.nz/
  * License:           GPL-2.0+
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants
-define( 'INSCIENCE_VERSION', '1.2.6' );
+define( 'INSCIENCE_VERSION', '1.2.7' );
 define( 'INSCIENCE_PLUGIN_FILE', __FILE__ );
 define( 'INSCIENCE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'INSCIENCE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -68,6 +68,7 @@ final class InScience_Training {
 		require_once INSCIENCE_PLUGIN_DIR . 'includes/class-notification.php';
 		require_once INSCIENCE_PLUGIN_DIR . 'includes/class-emails.php';
 		require_once INSCIENCE_PLUGIN_DIR . 'includes/class-calendar.php';
+		require_once INSCIENCE_PLUGIN_DIR . 'includes/class-course-table.php';
 		require_once INSCIENCE_PLUGIN_DIR . 'includes/class-ajax.php';
 
 		if ( is_admin() ) {
@@ -98,6 +99,7 @@ final class InScience_Training {
 		InScience_Notification::instance();
 		InScience_Emails::instance();
 		InScience_Calendar::instance();
+		InScience_Course_Table::instance();
 		InScience_Ajax::instance();
 
 		if ( is_admin() ) {

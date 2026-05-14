@@ -141,6 +141,35 @@ if ( ! is_array( $saved_titles ) ) {
 				'tip'         => __( 'Tip: Place this shortcode on a dedicated page (e.g. <em>Enrol</em>) and set that page in Settings.', 'inscience-training' ),
 			),
 			array(
+				'icon'        => 'dashicons-list-view',
+				'tag'         => '[inscience_course_table]',
+				'title'       => __( 'Course Table', 'inscience-training' ),
+				'purpose'     => __( 'Displays upcoming, published courses in a simple HTML table. Each row shows the course title, delivery type, dates, time, location/city, and an Enrol Now button linking to the enrolment form page with the course pre-selected.', 'inscience-training' ),
+				'attributes'  => array(
+					array(
+						'name'     => 'type',
+						'type'     => 'string',
+						'default'  => '(empty – all delivery types)',
+						'example'  => '[inscience_course_table type="classroom"]',
+						'desc'     => __( 'Filter by delivery type. Accepted values: <code>classroom</code>, <code>zoom</code>, or leave empty to show all types.', 'inscience-training' ),
+					),
+					array(
+						'name'     => 'limit',
+						'type'     => 'integer',
+						'default'  => '0 (all courses)',
+						'example'  => '[inscience_course_table limit="5"]',
+						'desc'     => __( 'Maximum number of courses to display. Set to 0 (or omit) to show all upcoming courses.', 'inscience-training' ),
+					),
+				),
+				'behaviour'   => array(
+					__( 'Only upcoming, published courses are shown. Cancelled courses are excluded automatically.', 'inscience-training' ),
+					__( 'Courses marked as <em>Full</em> display "Course Full" instead of the Enrol Now button.', 'inscience-training' ),
+					__( 'The Enrol Now button pre-selects the course in the enrolment form page.', 'inscience-training' ),
+				),
+				'requires'    => __( 'Set the <strong>Enrolment Form Page</strong> in Settings → Pages so that Enrol Now links point to the correct page.', 'inscience-training' ),
+				'tip'         => __( 'Tip: Use <code>type="classroom"</code> or <code>type="zoom"</code> to show only one delivery type, or combine with <code>limit</code> to feature a set number of upcoming courses on a homepage section.', 'inscience-training' ),
+			),
+			array(
 				'icon'        => 'dashicons-bell',
 				'tag'         => '[inscience_notification_signup]',
 				'title'       => __( 'New Course Notification Sign-up', 'inscience-training' ),

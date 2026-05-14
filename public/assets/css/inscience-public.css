@@ -636,6 +636,167 @@
 }
 
 /* -------------------------------------------------------------------------
+   Course Table
+   ------------------------------------------------------------------------- */
+.inscience-course-table-wrap {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.inscience-no-courses {
+	font-size: 15px;
+	color: #646970;
+}
+
+.inscience-course-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 14px;
+}
+
+.inscience-course-table thead th {
+	background: #003366;
+	color: #fff;
+	padding: 11px 14px;
+	text-align: left;
+	white-space: nowrap;
+	font-weight: 600;
+	font-size: 13px;
+	letter-spacing: 0.02em;
+}
+
+.inscience-course-table tbody tr {
+	border-bottom: 1px solid #e2e8f0;
+	transition: background 0.15s;
+}
+
+.inscience-course-table tbody tr:last-child {
+	border-bottom: none;
+}
+
+.inscience-course-table tbody tr:hover {
+	background: #f8fafc;
+}
+
+.inscience-course-table tbody td {
+	padding: 11px 14px;
+	vertical-align: middle;
+	color: #1d2327;
+}
+
+.inscience-table-us {
+	display: block;
+	font-size: 12px;
+	color: #646970;
+	margin-top: 3px;
+}
+
+/* Type badges */
+.inscience-type-badge {
+	display: inline-block;
+	padding: 3px 9px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.inscience-type-classroom {
+	background: #e8eef5;
+	color: #003366;
+}
+
+.inscience-type-zoom {
+	background: #e6f7ef;
+	color: #00703c;
+}
+
+/* Status badges */
+.inscience-status-badge {
+	display: inline-block;
+	padding: 3px 9px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.inscience-status-open {
+	background: #e6f7ef;
+	color: #00703c;
+}
+
+.inscience-status-full {
+	background: #fde8e8;
+	color: #9b1c1c;
+}
+
+.inscience-status-limited {
+	background: #fef3e2;
+	color: #92400e;
+}
+
+.inscience-table-actions {
+	white-space: nowrap;
+	text-align: center;
+}
+
+.inscience-btn-enrol-sm {
+	padding: 7px 16px;
+	font-size: 13px;
+}
+
+/* Responsive stacked layout */
+@media (max-width: 640px) {
+	.inscience-course-table thead {
+		display: none;
+	}
+
+	.inscience-course-table,
+	.inscience-course-table tbody,
+	.inscience-course-table tr,
+	.inscience-course-table td {
+		display: block;
+		width: 100%;
+	}
+
+	.inscience-course-table tbody tr {
+		border: 1px solid #e2e8f0;
+		border-radius: 6px;
+		margin-bottom: 12px;
+		padding: 8px 0;
+	}
+
+	.inscience-course-table tbody td {
+		display: flex;
+		gap: 8px;
+		padding: 7px 14px;
+		border-bottom: 1px solid #f0f0f1;
+	}
+
+	.inscience-course-table tbody td:last-child {
+		border-bottom: none;
+	}
+
+	.inscience-course-table tbody td::before {
+		content: attr(data-label);
+		font-weight: 600;
+		color: #646970;
+		min-width: 90px;
+		flex-shrink: 0;
+	}
+
+	.inscience-table-actions::before {
+		display: none;
+	}
+
+	.inscience-table-actions {
+		justify-content: flex-start;
+		padding-top: 10px;
+	}
+}
+
+/* -------------------------------------------------------------------------
    Responsive
    ------------------------------------------------------------------------- */
 @media (max-width: 480px) {
